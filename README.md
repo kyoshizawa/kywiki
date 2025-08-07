@@ -4,4 +4,4 @@
 
 # リンク
 
-[Terminal API](./terminal-api/TOP.md)
+[Terminal API](./terminal-api/terminal-api-0-top.md)
