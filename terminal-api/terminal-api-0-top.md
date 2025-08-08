@@ -11,107 +11,48 @@
 
 ![アイコン](./img/outlook-1.png)
 
+![起動後](./img/outlook-2.png)
+
 ## 利用時の構成
 
 - TerminalAPI 単独 (+ MaintenanceAPP)
-  - 導入予定：エイジィ xxx
 
-  (画像)
+![構成](./img/structure-1.png)
 
 
-- (TBD) 決済アプリ + TerminalAPI
+  - 導入予定：エイジィ xxx  
+    - ホテル向け無人決済機を構築したい。  
+    - 利用者はエイジィの端末を操作するが、決済機能は Terminal API を利用したい。
+
+
+- 【没】 決済アプリ + TerminalAPI
   
+![構成２](./img/structure-2.png)
+
   - 没になった構成案。
-  - この構成の場合 MultiPaymentProject でも対応が必要。  
-    実際はこの構成は利用しないかもしれないが、保険で `MultiPaymentProject: feature/v1/terminal` ブランチに対応ソースが残されている（未マージ）
-  - TerminalAPI に OKICA の種別指定ができるAPIがあるが、
-    開局は TerminalAPI でしてない。そのため、OKICAはこの構成でないと動かない。
+  - この構成の場合 MultiPaymentProject でも連携のための対応が必要。  
+     `MultiPaymentProject: feature/v1/terminal` ブランチに対応ソースが残されている（未マージ）
+  - が、おそらく使うことはない。
+  - TerminalAPI には OKICA の種別指定ができるAPIがあるが、単独で開局はしていないため  
+    OKICA はこの構成ありきで組まれている。
+
+
+## 内部構成
+
+
+(TBD)  
 
 
 ## 機能一覧
 
-- 起動
-- HTTPサービス
+TerminalAPI はカテゴライズすると主に以下の種類の処理が実装されている。  
+詳細は各リンク先へ
 
-
-### 起動
-
-- PayTerminalApplication 
-  - ログ機構の初期化。
-  - 例外ハンドラの設置。
-  - エラーメッセージ初期化。
-  - AppPreference の初期化。
-  - 各サブモジュールアプリの init。
-  - SDK の init。
-  - 非接触soの読み込み。
-  - 削除 worker 処理を起動。  
-  - room 用の鍵をロード。
-
-- MainActivity
-  - 権限要求。 
-  - AppPreferenceの 起動時にリセットする項目を初期化。
-  - 再開局ハンドラ
-  - PayTerminalService の起動。（これにより TCP 8080 で待ち受ける ）
-  - タイマーリセットハンドラ
-  - Aggregateデータの新規作成。
-  - intent で起動している場合は、その情報から Preference 設定
-  - WifiDirect （親）の準備。group 作成
-  - 電波強度の作成サービスを実行。
-  - 定期売上送信処理の起動。
-  - 開局チェックバックグラウンド処理 起動。
-  - UIの表示。PayTerminalApp を表示する。
-
-
-## App Preference
-保存されずに何かしらで起動時に取得
-
-|| intent | tinfo |
-|---|---|---|
-| soundPaymentVolume | ◎ | def | 
-| soundGuidanceVolume | ◎ | def |
-| terminalId | ◎ | ◎ |
-| deviceId | ◎ | ◎ |
-| staffCode | ◎ | ◎ |
-| productCode | ◎ | ◎ |
-| merchantTel | ◎ | ◎ |
-| merchantOffice | ◎ | ◎ |
-| merchantName | ◎ | ◎ |
-| receiptTax | ◎ | ◎ |
-| invoiceNo | ◎ | ◎ |
-| moneyCredit | ◎ | ◎ |
-| moneyContactless | ◎ | ◎ |
-| moneySuica | ◎ | ◎ |
-| moneyId | ◎ | ◎ |
-| moneyWaon | ◎ | ◎ |
-| moneyNanaco | ◎ | ◎ |
-| moneyEdy | ◎ | ◎ |
-| moneyQuicpay | ◎ | ◎ |
-| moneyOkica | ◎ | ◎ |
-| moneyQr | ◎ | ◎ |
-| isDriverCodeInput | ◎ | |
-| organizationId | | ◎ |
-| isServicePos | ◎ | |
-| mcCarId | | ◎ |
-| mcDriverId | | ◎ |
-| driverCode | | |
-| mcTermId | | ◎ |
-| isWithcash1yen | | ◎ |
-| signalStrength | | |
-
-#### Shared Preference
-保存される
-| intent |  |
-|---|---|
-| terminal_status | 起動時に初期化されてるもの |
-| is_activate | |
-| dns_name | |
-| wifi_info | |
-| ethernet_info | |
-
-
-
-## 非推奨
-- MainActivity.kt  systemUiVisibility
-
-
-## 
+- HTTPサーバ（WebAPI）
+- mDNS サービス
+- Wifi Direct 接続（親）
+- 各種バックグラウンド処理  
+  [リンク](./terminal-api-4-background.md)
+　　
+　　
+　
