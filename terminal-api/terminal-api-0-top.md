@@ -9,11 +9,23 @@
 
 ## 外観
 
-(TBD)
+![アイコン](./img/outlook-1.png)
 
 ## 利用時の構成
 
+- TerminalAPI 単独 (+ MaintenanceAPP)
+  - 導入予定：エイジィ xxx
 
+  (画像)
+
+
+- (TBD) 決済アプリ + TerminalAPI
+  
+  - 没になった構成案。
+  - この構成の場合 MultiPaymentProject でも対応が必要。  
+    実際はこの構成は利用しないかもしれないが、保険で `MultiPaymentProject: feature/v1/terminal` ブランチに対応ソースが残されている（未マージ）
+  - TerminalAPI に OKICA の種別指定ができるAPIがあるが、
+    開局は TerminalAPI でしてない。そのため、OKICAはこの構成でないと動かない。
 
 
 ## 機能一覧
@@ -102,3 +114,4 @@
 - MainActivity.kt  systemUiVisibility
 
 
+## 
