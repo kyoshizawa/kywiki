@@ -29,12 +29,23 @@
   
 ![構成２](./img/structure-2.png)
 
-  - 没になった構成案。
-  - この構成の場合 MultiPaymentProject でも連携のための対応が必要。  
+    - 没になった構成案。
+    - この構成の場合 MultiPaymentProject でも連携のための対応が必要。  
      `MultiPaymentProject: feature/v1/terminal` ブランチに対応ソースが残されている（未マージ）
-  - が、おそらく使うことはない。
-  - TerminalAPI には OKICA の種別指定ができるAPIがあるが、単独で開局はしていないため  
-    OKICA はこの構成ありきで組まれている。
+    - が、おそらく使うことはない。
+    - TerminalAPI には OKICA の種別指定ができるAPIがあるが、単独で開局はしていないため  
+      OKICA はこの構成ありきで組まれている。
+
+
+## ビルド
+
+- リポジトリ  
+  https://github.com/MobileCreate/pay_terminal.git  
+  `develop` が開発用ブランチ
+
+- JDK  
+  gradle の設定を JDK 17 使用し、デバッグ実行を確認。  
+
 
 
 ## 内部構成
@@ -45,7 +56,7 @@
 
 ## 機能一覧
 
-TerminalAPI はカテゴライズすると主に以下の種類の処理が実装されている。  
+TerminalAPI は主に以下の種類の処理が実装されている。  
 詳細は各リンク先へ
 
 - HTTPサーバ（WebAPI）
