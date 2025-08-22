@@ -46,6 +46,10 @@
 - JDK  
   gradle の設定を JDK 17 使用し、デバッグ実行を確認。  
 
+
+  - ※ ちなみに MultiPaymentProject2025 は JDK 11 。
+
+
 - keystore  
   apk ファイルの署名情報を key.properties から取得しているが、
   この情報はセキュリティ留意のため、ソースリポジトリに含んでいない。  

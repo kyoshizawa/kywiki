@@ -50,3 +50,47 @@
 `xxx`
 
 なお、未アクティベーションの場合 TerminalAPI を立ち上げると Maintenanceアプリを立ち上げようとする。
+
+
+## /v1/payments | POST | 決済の実行
+
+
+Idempotency-Key: 
+
+{
+  "type": "suica",
+  "amount": 1,
+  "showCancelButton": true
+}
+
+{
+"id": "20250820110145",
+"amount": 1,
+"status": "processing",
+"transaction_at": "2025-08-20T11:01:45Z"
+}
+
+
+## 	/v1/terminal/actions/inquireBalance	POST	残高照会
+
+?type=suica
+
+iD は対応していない
+
+
+##	/v1/payments/{id}/cancel	POST	決済の取消
+
+
+Idempotency-Key: 
+
+{}
+
+
+{
+"id": "20250820131604",
+"amount": 1,
+"status": "processing",
+"transaction_at": "2025-08-20T13:16:04Z"
+}
+
+Edy と nanaco は対応してない
