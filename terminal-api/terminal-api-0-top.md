@@ -25,17 +25,26 @@
     - 利用者はエイジィの端末を操作するが、決済機能は Terminal API を利用したい。
 
 
-- 【没】 決済アプリ + TerminalAPI
-  
-![構成２](./img/structure-2.png)
 
-    - 没になった構成案。
-    - この構成の場合 MultiPaymentProject でも連携のための対応が必要。  
-     `MultiPaymentProject: feature/v1/terminal` ブランチに対応ソースが残されている（未マージ）
-    - が、おそらく使うことはない。
-    - TerminalAPI には OKICA の種別指定ができるAPIがあるが、単独で開局はしていないため  
-      OKICA はこの構成ありきで組まれている。
+### 利用時の構成【没】 
 
+- [没の構成案](./terminal-api-x-top-botu.md)
+
+
+
+## 機能一覧
+
+TerminalAPI は主に以下の種類の処理が実装されている。  
+詳細は各リンク先へ
+
+- [HTTPサーバ（WebAPI）](./terminal-api-1-http.md)
+- mDNS サービス
+- Wifi Direct 接続（親）
+- 各種バックグラウンド処理  
+  [リンク](./terminal-api-4-background.md)
+　　
+　　
+　
 
 ## ビルド
 
@@ -61,20 +70,7 @@
 
 ## 内部構成
 
+まだ編集中です。
 
-(TBD)  
+![構成２](./img/internal-structure.png)
 
-
-## 機能一覧
-
-TerminalAPI は主に以下の種類の処理が実装されている。  
-詳細は各リンク先へ
-
-- [HTTPサーバ（WebAPI）](./terminal-api-1-http.md)
-- mDNS サービス
-- Wifi Direct 接続（親）
-- 各種バックグラウンド処理  
-  [リンク](./terminal-api-4-background.md)
-　　
-　　
-　

@@ -9,6 +9,13 @@ keystore の扱いが MaintenanceApp は違う。統一しておきたい。
 【降った】MC相互認証前に PostPaymentLooper.kt が動作し、売り上げ送信するとアプリケーションがクラッシュする
 
 
+設定が変更されていない場合に自動更新が動いていないのでは
+
+ MainNotifier.setOnUpdateApkListener {
+     mainViewModel.resetTimer()
+ }
+
+
 # スタンドアロン
 
 別アプリから Intent で起こされていなければスタンドアロン判定。
