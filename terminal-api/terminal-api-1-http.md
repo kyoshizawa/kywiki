@@ -35,7 +35,7 @@
 | Terminal | /v1/terminal | GET | 端末情報取得 | 
 | Terminal | /v1/terminal/status | GET | 端末ステータス取得 | 
 | Terminal | /v1/terminal/actions/reopen | POST | 再開局 | 
-| Terminal | /v1/terminal/actions/shutdown | POST | 業務終了 |
+| Terminal | 端末系：業務終了 | /v1/terminal/actions/shutdown | POST | |
 | Terminal | /v1/terminal/actions/inquireBalance | POST | 残高照会 | 
 | Terminal | /v1/terminal/actions/charge | POST | チャージ |
 | Terminal | /v1/terminal/actions/softUpdate | POST | ソフトウェア更新 |
@@ -45,27 +45,57 @@
 ## 共通事項
 
 ### 存在しないURL
-URL が定義されていないものの場合は、以下のエラーを返却する。
+- URL が定義されていないものの場合は、以下のエラーを返却する。
 
-`status code : 404 , error code : NOT_FOUND`
+  `status code : 404 , error code : NOT_FOUND`
 
 ### アクティベーション
-すべてのAPIは、利用するために事前に端末がアクティベーションされている必要がある。  
-もし、未アクティベーションの場合、以下のエラーを返却する。
+- すべてのAPIは、利用するために事前に端末がアクティベーションされている必要がある。  
+  もし、未アクティベーションの場合、以下のエラーを返却する。
 
-`status code : 400 , error code : NOT_ACTIVATED`
+  `status code : 400 , error code : NOT_ACTIVATED`
 
-なお、未アクティベーションの場合 TerminalAPI を立ち上げると Maintenanceアプリを立ち上げようとする。
+  なお、未アクティベーションの場合 TerminalAPI を立ち上げると Maintenanceアプリを立ち上げようとする。
 
 ### 更新中
-アプリケーションのアップデート中（apkダウンロード後のインストール中）は、以下のエラーを返却する。
+- アプリケーションのアップデート中（apkダウンロード後のインストール中）は、以下のエラーを返却する。
 
-`status code : 400 , error code : APP_INSTALLING`
+  `status code : 400 , error code : APP_INSTALLING`
 
-だが、実際は更新と同時にアプリケーションが終了し、 HTTP 待ち受けが閉じるので、
-このコードが返却されることはない。
+- だが、実際は更新と同時にアプリケーションが終了し、 HTTP 待ち受けが閉じるので、このコード返却が再現されることはない。
 
 
+## 業務状態
+- 決済関連のAPIは業務状態というステータスをもつ。
+  業務状態が "開局" でなければ、APIの実行はできない。
+
+- "開局" とは、決済の利用にあたり必要なシンクラセンター認証などの前処理を指す。
+
+- 業務状態は以下のバリエーションを持つ。  
+
+  |||
+  |---|---|
+  | OPENING | 開局中 |
+  | OPENED | 開局 |
+  | CLOSED | 閉局 | 
+  | EXPIRED | 期限切れ | 
+
+- 開局は以下のタイミングで行われる  
+  - アプリケーション起動時
+  - API : "再開局" の呼び出し時
+  - 設定時の自動再開局
+
+- 開局後２４時間経過すると、自動的に "期限切れ" に更新される。
+
+### 自動再開局
+- アプリケーション設定で "前回の開局から24時間以内に自動で再開局" を設定すると、
+  タイマー処理により２４時間後に再処理が行われる。
+
+  ※ これは起動時と同様 paymentInitializerUseCase により実行される。
+
+- 設定が無効であれば、再開局は実行されない。  
+  その場合、運用としては API : 再開局" の呼び出しか、アプリケーションの再起動を実行する
+   
 ## エンドポイント別
 
 ### ヘルスチェック
@@ -124,7 +154,7 @@ URL が定義されていないものの場合は、以下のエラーを返却�
 - このAPIをコールすると決済を開始し、TerminalAPI上のUIで支払待ち画面を表示する。
 - 
 - 業務開始状態でない場合は以下のエラーを返す  
-  `status code : 400 , error code : APP_INSTALLING`
+  `status code : 400 , error code : INVALID_OPEN_STATUS`
 - 既に別の決済が実行中の場合は以下のエラーを返す  
   `status code : 400 , error code : SERVICE_NOT_AVAILABLE`
 
@@ -151,3 +181,27 @@ Idempotency-Key:
 }
 
 Edy と nanaco は対応してない
+
+
+## 端末系：業務終了
+
+- 要求データ
+  ```
+  {
+    "show_confirm": true
+  }
+  ```
+  |  |  |
+  |---|---|
+  | show_confirm | 確認画面を表示する |
+
+- 応答データ
+  ```
+  {}
+  ```
+
+#### 説明
+
+- 終了時の処理を行い、端末をシャットダウンする。
+- この処理は history_aggregates に終了時刻を記録し、ローテーションする。
+  
