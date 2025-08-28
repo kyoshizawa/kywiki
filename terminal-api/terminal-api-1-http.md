@@ -129,6 +129,9 @@
   ```
   Idempotency-Key: {string}
   ```
+  |  |  |
+  |---|---|
+  | Idempotency-Key | 電文重複キー |
 
 - 要求データ
   ```
@@ -160,9 +163,38 @@
 - このAPIをコールすると決済を開始し、TerminalAPI上のUIで支払待ち画面を表示する。
 - その際、DB: `transactions` を新規登録する。初期状態は "processing"。
 
-- 支払待ち画面でキャンセル操作を行うと `transactions` を "stopped" に更新する。
+- 支払い待ち画面のタイムアウト値は３０秒。
 
-- 支払が完了すると  `transactions` を "complated" に更新し、金種固有の情報 + レシート情報との紐づけを行う。
+- 支払が完了すると  `transactions` を "complated" に更新し、金種固有の情報と共に保存を行う。  
+  また、DB: `history_uris`, `history_slips` を作成する。
+  `history_slips`.id は transactions に関連付けされる。
+
+- 作成された `history_uris` は売上データである。作成後、直ちにセンター送信される。
+
+- 通番の最新値は preference に保存されている。  
+  設定名は "term_sequence"。
+
+
+#### 異常ケース
+
+- 支払が失敗すると  `transactions` を "failed" に更新する。  
+  失敗時に DB: `history_uris`, `history_slips` が作成されるかは、処理の進捗による。
+
+  1. オーソリ送信前の失敗： 作成されない
+  2. オーソリ送信以降の失敗： 作成される
+
+- 支払い待ち画面で何らかの要因でキャンセルすると、 `transactions` を "stopped" に更新する。  
+ DB: `history_uris`, `history_slips` は作成されない。
+
+  キャンセル要因は以下。
+  1. タイムアウト
+  2. キャンセルボタンの押下。
+  3. PIN入力画面でキャンセルボタンの押下。
+
+- PIN 入力画面でタイムアウトすると `transactions` を "failed" に更新する。 
+  
+
+#### 利用できない状態
 
 - 業務開始状態でない場合は以下のエラーを返す  
   `status code : 400 , error code : INVALID_OPEN_STATUS`
@@ -170,6 +202,9 @@
   `status code : 409 , error code : TRANSACTION_IN_PROGRESS`
 - 指定の金種が使えない状態の場合以下のエラーを返す  
   `status code : 400 , error code : PAYMENT_METHOD_UNAVAILABLE`
+- 電文重複キーが同一のものが送信された場合、以下のエラーを返す
+  `status code : 400 , error code : TRANSACTION_EXECUTED`
+
 
 ## 	/v1/terminal/actions/inquireBalance	POST	残高照会
 
