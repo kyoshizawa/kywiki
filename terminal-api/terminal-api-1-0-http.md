@@ -26,9 +26,9 @@
 |---|---|---|---|---|
 | - | ヘルスチェック | /v1/health-check | - | | 
 | Payments | 決済系：決済実行 | /v1/payments | POST | |
-| Payments | /v1/payments/{id} | GET | 決済の取得 |
-| Payments | /v1/payments/{id}/cancel | POST | 決済の取消 |
-| Payments | /v1/payments/{id}/stop | POST | 決済の中断 |
+| Payments | 決済系：決済取得 | /v1/payments/{id} | GET |  |
+| Payments | 決済系：決済の取消 | /v1/payments/{id}/cancel | POST |  |
+| Payments | /v1/paymen｜s/{id}/stop | POST | 決済の中断 |
 | Transactions | /v1/transactions/{id} | GET | 取引の取得 |
 | Transactions | /v1/transactions | GET | 取引の一覧取得 |
 | Transactions | /v1/transactions/{id}/receipt | POST | 取引のレシート印刷 |

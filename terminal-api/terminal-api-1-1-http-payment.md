@@ -10,7 +10,7 @@
   |---|---|
   | Idempotency-Key | 電文重複キー |
 
-- 要求データ
+- 要求データ (body)
   ```
   {
     "type": "suica",
@@ -114,20 +114,103 @@ type に使用できるデータ。
 
 
 
+## 決済系：決済取得
+
+
+- 要求データ (URL)
+  ```
+  /vi/payments/{id}
+  ```
+  |  |  |
+  |---|---|
+  | id | 取引ID |
+
+- 応答データ
+  ```
+  {
+    "id": "20250820110145",
+    "amount": 1,
+    "status": "processing",
+    "transaction_at": "2025-08-20T11:01:45Z",
+    "term_sequence": "1"
+  }
+  ```
+  |  |  |
+  |---|---|
+  | id | 取引ID |
+  | amount | 支払金額 |
+  | status | 状態 |
+  | transaction_at | 取引日時 |
+  | term_sequence | 端末通番 |
+
+
+#### 説明
+
+- 指定した取引ID の transactions を検索し、返却する。
+- 取引の状態を確認するのが主な使い方。  
+  この API でポーリングし、"completed" になったら、クライアントは次の処理に進める。
+  など
+
+#### 利用できない状態
+
+- 指定 id に該当するデータがない場合、以下のエラーを返す。  
+  `status code : 400 , error code : INVALID_PARAMS`
+
+
+
+## 決済系：決済の取消
+
+- ヘッダ  
+  ```
+  Idempotency-Key: {string}
+  ```
+  |  |  |
+  |---|---|
+  | Idempotency-Key | 電文重複キー |
+
+
+- 要求データ (URL)
+  ```
+  /vi/payments/{id}/cancel
+  ```
+  |  |  |
+  |---|---|
+  | id | 取引ID |
+
+
+- 要求データ (body)  
+
+  ```
+  { }
+  ```
+  なし
+
+- 応答データ
+
+  ```
+  {
+    "id": "1",
+    "amount": 10000,
+    "status": "processing",
+    "transaction_at": "2024-02-20T12:00:00Z",
+    "term_sequence": 123
+  }
+  ```
+
+
+#### 説明
+
+- 指定した取引ID の transactions を検索し、返却する。
+
+
+
+
 
 ## 	/v1/terminal/actions/inquireBalance	POST	残高照会
 
 ?type=suica
 
 iD は対応していない
-
-
-##	/v1/payments/{id}/cancel	POST	決済の取消
-
-
-Idempotency-Key: 
-
-{}
 
 
 {
