@@ -162,6 +162,8 @@
 
 - 支払待ち画面でキャンセル操作を行うと `transactions` を "stopped" に更新する。
 
+- 支払が完了すると  `transactions` を "complated" に更新し、金種固有の情報 + レシート情報との紐づけを行う。
+
 - 業務開始状態でない場合は以下のエラーを返す  
   `status code : 400 , error code : INVALID_OPEN_STATUS`
 - 既に別の決済が実行中の場合は以下のエラーを返す  

@@ -6,7 +6,8 @@
 
 | | |
 |---|---|
-| history_aggregates | |
+| history_aggregates | 業務状態 |
+| main_app_datas | アプリデータ |
 
 
 ### history_aggregates
@@ -28,3 +29,31 @@
 
 - aggregate_history_order  
   先頭を 0 として扱っている
+
+
+### main_app_datas
+
+- アプリデータ。UIの起動時に削除 / 新規登録される。
+- 参照されている場所は見当たらない。
+  
+
+#### フィールド
+
+| シンボル名 | 備考 |
+|---|---|
+| id | |
+| startupType | | 
+| model | |
+| driverCd | | 
+| driverName | |
+| carNo | |
+| amount | |
+| organizationId | |
+| deviceId | |
+| isInput1yen | | 
+| prepaidServiceDomain | |
+| prepaidServiceKey | |
+| isDemoMode | |
+| organizationName | |
+| organizationParentName | |
+
