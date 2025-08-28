@@ -37,7 +37,7 @@
 TerminalAPI は主に以下の種類の処理が実装されている。  
 詳細は各リンク先へ
 
-- [HTTPサーバ（WebAPI）](./terminal-api-1-http.md)
+- [HTTPサーバ（WebAPI）](./terminal-api-1-0-http.md)
 - mDNS サービス
 - Wifi Direct 接続（親）
 - 各種バックグラウンド処理  
