@@ -156,20 +156,42 @@
     "transaction_at": "2025-08-20T11:01:45Z"
   }
   ```
+  |  |  |
+  |---|---|
+  | id | 取引ID |
+  | amount | 支払金額 |
+  | status | 状態 |
+  | transaction_at | 取引日時 |
+
+
+- 定数値
+type に使用できるデータ。
+
+||
+|---|
+| credit |
+| suica |
+| id |
+| waon |
+| nanaco |
+| edy |
+| quicpay |
+| okica |
+| qr |
 
 
 #### 説明
 
-- このAPIをコールすると決済を開始し、TerminalAPI上のUIで支払待ち画面を表示する。
+- このAPIをコールすると決済を開始し、TerminalAPI上のUIで支払い待ち画面を表示する。
 - その際、DB: `transactions` を新規登録する。初期状態は "processing"。
 
 - 支払い待ち画面のタイムアウト値は３０秒。
 
-- 支払が完了すると  `transactions` を "complated" に更新し、金種固有の情報と共に保存を行う。  
+- 支払操作が完了（成功）すると  `transactions` を "complated" に更新し、金種固有の情報と共に保存を行う。  
   また、DB: `history_uris`, `history_slips` を作成する。
   `history_slips`.id は transactions に関連付けされる。
 
-- 作成された `history_uris` は売上データである。作成後、直ちにセンター送信される。
+- 作成された `history_uris` は売上データである。作成後、BackgroundTask で直ちにセンター送信される。
 
 - 通番の最新値は preference に保存されている。  
   設定名は "term_sequence"。
@@ -191,8 +213,8 @@
   2. キャンセルボタンの押下。
   3. PIN入力画面でキャンセルボタンの押下。
 
-- PIN 入力画面でタイムアウトすると `transactions` を "failed" に更新する。 
-  
+- PIN 入力画面でタイムアウトすると `transactions` を "failed" に更新する。   
+  PIN 入力画面のタイムアウト値は６０秒。
 
 #### 利用できない状態
 
@@ -205,6 +227,12 @@
 - 電文重複キーが同一のものが送信された場合、以下のエラーを返す
   `status code : 400 , error code : TRANSACTION_EXECUTED`
 
+
+#### データサンプル
+
+- 本APIで出力されるデータを以下に記載している
+
+[サンプル](./files/db_sample1.xlsx)
 
 ## 	/v1/terminal/actions/inquireBalance	POST	残高照会
 
