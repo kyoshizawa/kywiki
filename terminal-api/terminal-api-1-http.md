@@ -158,11 +158,16 @@
 #### 説明
 
 - このAPIをコールすると決済を開始し、TerminalAPI上のUIで支払待ち画面を表示する。
-- 
+- その際、DB: `transactions` を新規登録する。初期状態は "processing"。
+
+- 支払待ち画面でキャンセル操作を行うと `transactions` を "stopped" に更新する。
+
 - 業務開始状態でない場合は以下のエラーを返す  
   `status code : 400 , error code : INVALID_OPEN_STATUS`
 - 既に別の決済が実行中の場合は以下のエラーを返す  
-  `status code : 400 , error code : SERVICE_NOT_AVAILABLE`
+  `status code : 409 , error code : TRANSACTION_IN_PROGRESS`
+- 指定の金種が使えない状態の場合以下のエラーを返す  
+  `status code : 400 , error code : PAYMENT_METHOD_UNAVAILABLE`
 
 ## 	/v1/terminal/actions/inquireBalance	POST	残高照会
 
