@@ -198,11 +198,24 @@ type に使用できるデータ。
   ```
 
 
+
 #### 説明
 
-- 指定した取引ID の transactions を検索し、返却する。
+- 指定した取引IDの取消を行うために、TerminalAPI上のUIで取消待ち画面を表示する。
+- 取消できるデータには条件がある。
+  1. 取消できるブランドであること
+  2. 
 
+#### 利用できない状態
 
+- 業務開始状態でない場合は以下のエラーを返す  
+  `status code : 400 , error code : INVALID_OPEN_STATUS`
+- 既に別の決済が実行中の場合は以下のエラーを返す  
+  `status code : 409 , error code : TRANSACTION_IN_PROGRESS`
+- 指定の金種が使えない状態の場合以下のエラーを返す  
+  `status code : 400 , error code : PAYMENT_METHOD_UNAVAILABLE`
+- 電文重複キーが同一のものが送信された場合、以下のエラーを返す
+  `status code : 400 , error code : TRANSACTION_EXECUTED`
 
 
 
