@@ -13,17 +13,22 @@
 
 ![起動後](./img/outlook-2.png)
 
-## 利用時の構成
+## ソフトウェア構成
 
 - TerminalAPI 単独 (+ MaintenanceAPP)
 
 ![構成](./img/structure-1.png)
 
 
+
+
+## 製品運用時構成
+
   - 導入予定：エイジィ xxx  
     - ホテル向け無人決済機を構築したい。  
     - 利用者はエイジィの端末を操作するが、決済機能は Terminal API を利用したい。
 
+![エイジィ](./img/product-structure-1.png)
 
 
 ### 利用時の構成【没】 
