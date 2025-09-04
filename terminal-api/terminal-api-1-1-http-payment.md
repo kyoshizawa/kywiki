@@ -192,7 +192,7 @@ type に使用できるデータ。
 #### 利用できない状態
 
 - 指定 id に該当するデータがない場合、以下のエラーを返す。  
-  `status code : 400 , error code : TRANSACTION_NOT_FOUND`
+  `status code : 404 , error code : TRANSACTION_NOT_FOUND`
 
 
 
