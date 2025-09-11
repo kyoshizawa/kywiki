@@ -1,6 +1,6 @@
 # 決済系
 
-## 決済系独自仕様
+## 決済系留意事項
 
 ### 操作可否
 
@@ -99,8 +99,10 @@ type に使用できるデータ。
 
 #### 説明
 
-- このAPIをコールすると決済を開始し、TerminalAPI上のUIで支払い待ち画面を表示する。
-- その際、DB: `transactions` を新規登録する。初期状態は "processing"。
+- このAPIをコールすると決済を開始し、TerminalAPI上のUIで支払い待ち画面を表示する。  
+  UIは指定された金種により異なる。
+
+- 画面表示時に、DB: `transactions` を新規登録する。初期状態は "processing"。
 
 - 支払い待ち画面のタイムアウト値は３０秒。
 
@@ -112,7 +114,7 @@ type に使用できるデータ。
 
 
 
-#### 異常ケース
+#### 異常ケース（クレジット）
 
 - 支払が失敗すると  `transactions` を "failed" に更新する。  
   失敗時に DB: `history_uris`, `history_slips` が作成されるかは、処理の進捗による。
@@ -130,6 +132,20 @@ type に使用できるデータ。
 
 - PIN 入力画面でタイムアウトすると `transactions` を "failed" に更新する。   
   PIN 入力画面のタイムアウト値は６０秒。
+
+#### 異常ケース（電子マネー）
+
+- 支払が失敗すると  `transactions` を "failed" に更新する。   
+  電子マネーはタイムアウトでも "failed" になる。
+
+  DB: `history_uris`, `history_slips` が作成されるのは以下の場合。
+
+  1. 成功
+  2. 処理未了
+
+- 支払い待ち画面でキャンセルボタンの押下をすると、 `transactions` を "stopped" に更新する。  
+ DB: `history_uris`, `history_slips` は作成されない。
+
 
 #### 利用できない状態
 
@@ -227,11 +243,10 @@ type に使用できるデータ。
 
   ```
   {
-    "id": "1",
-    "amount": 10000,
+    "id": "20250911115240",
+    "amount": 1,
     "status": "processing",
-    "transaction_at": "2024-02-20T12:00:00Z",
-    "term_sequence": 123
+    "transaction_at": "2025-09-11T11:52:40Z"
   }
   ```
 
@@ -245,13 +260,18 @@ type に使用できるデータ。
 - 取消できるデータには条件がある。  
   以下の "利用できない状態" の項を参考。
 
+- 取消に失敗しても操作が完了していない場合、再度実行が可能。
+
 - 基本的は決済と同様の操作の流れとなる。  
-  画面表示寺院 DB: transactions を新規登録する。初期状態は "processing"。ただし種別は取り消しのものとなる。("cancel")
+  画面表示時に DB: transactions を新規登録する。初期状態は "processing"。  
+  ただし種別は取消のものとなる。("cancel")
+
+- 取消待ち画面のタイムアウト値は３０秒。
 
 - 金額や金種は指定した取引のものが採用される。
-- 
 
-#### 異常ケース
+
+#### 異常ケース（クレジット）
 
 - 当然だが、媒体は支払い時と同様のものを使う必要がある。
   別媒体で取り消そうとするとエラーとなる。
@@ -270,6 +290,20 @@ type に使用できるデータ。
   2. キャンセルボタンの押下。
   3. PIN入力画面でキャンセルボタンの押下。
 
+#### 異常ケース（電子マネー）
+
+- 支払と同様に、失敗すると `transactions` を "failed" に更新する。   
+  電子マネーはタイムアウトでも "failed" になる。
+
+  DB: `history_uris`, `history_slips` が作成されるのは以下の場合。
+
+  1. 成功
+  2. 処理未了
+
+- 待ち画面でキャンセルボタンの押下をすると、 `transactions` を "stopped" に更新する。  
+ DB: `history_uris`, `history_slips` は作成されない。
+
+
 #### 利用できない状態
 
 - 業務開始状態でない場合は以下のエラーを返す  
@@ -286,6 +320,8 @@ type に使用できるデータ。
   `status code : 400 , error code : INVALID_TRANSACTION_TYPE`
 - 完了でない取引が指定された場合以下のエラーを返す  
   `status code : 400 , error code : PAYMENT_NOT_COMPLETED`
+- すでに取り消しされている場合以下のエラーを返す
+  `status code : 400 , error code : PAYMENT_CANCELED`
 
 
 ## 	/v1/terminal/actions/inquireBalance	POST	残高照会
