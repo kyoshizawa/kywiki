@@ -42,6 +42,9 @@
 
 ## 決済系：決済実行
 
+- HTTPメソッド  
+  POST
+
 - ヘッダ  
   ```
   Idempotency-Key: {string}
@@ -170,6 +173,8 @@ type に使用できるデータ。
 
 ## 決済系：決済取得
 
+- HTTPメソッド  
+  GET
 
 - 要求データ (URL)
   ```
@@ -212,7 +217,10 @@ type に使用できるデータ。
 
 
 
-## 決済系：決済取消
+## 決済系：決済の取消
+
+- HTTPメソッド  
+  POST
 
 - ヘッダ  
   ```
@@ -277,10 +285,7 @@ type に使用できるデータ。
   別媒体で取り消そうとするとエラーとなる。
 
 - 支払と同様に、失敗すると  `transactions` を "failed" に更新する。  
-  失敗時に DB: `history_uris`, `history_slips` が作成されるかは、処理の進捗による。
-
-  1. オーソリ送信前の失敗： 作成されない
-  2. オーソリ送信以降の失敗： 作成される
+  取消では、失敗時に DB: `history_uris`, `history_slips` は作成されない。
 
 - 支払と同様に、何らかの要因でキャンセルすると、 `transactions` を "stopped" に更新する。  
  DB: `history_uris`, `history_slips` は作成されない。
@@ -322,6 +327,55 @@ type に使用できるデータ。
   `status code : 400 , error code : PAYMENT_NOT_COMPLETED`
 - すでに取り消しされている場合以下のエラーを返す
   `status code : 400 , error code : PAYMENT_CANCELED`
+
+
+
+## 決済系：決済の中断
+
+- HTTPメソッド  
+  POST
+
+- 要求データ (URL)
+  ```
+  /vi/payments/{id}/stop
+  ```
+  |  |  |
+  |---|---|
+  | id | 取引ID |
+
+- 要求データ (body)  
+
+  ```
+  { }
+  ```
+  なし
+
+- 応答データ
+
+  ```
+  {
+    "id": "20250911115240",
+    "amount": 1,
+    "status": "processing",
+    "transaction_at": "2025-09-11T11:52:40Z"
+  }
+  ```
+
+#### 説明
+
+- 指定した取引IDの処理前中止を行う。  
+  カードかざし待ち画面の状態で有効。
+- 中断された取引のステータスは "stopped" となる。
+- 支払にも取消にも使用可能。
+
+
+#### 利用できない状態
+
+- 指定 id に該当するデータがない場合、以下のエラーを返す。  
+  `status code : 404 , error code : TRANSACTION_NOT_FOUND`
+- 処理中でない取引が指定された場合以下のエラーを返す  
+  `status code : 400 , error code : TRANSACTION_NOT_IN_PROGRESS`
+
 
 
 ## 	/v1/terminal/actions/inquireBalance	POST	残高照会
