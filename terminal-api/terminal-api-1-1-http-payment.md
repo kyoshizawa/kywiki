@@ -29,7 +29,8 @@
   設定名は "term_sequence"。
 
 ### 売上送信
-売上送信は　Background Task で行われている。
+売上送信は　Background Task で行われている。  
+全ての金種で同様の動作。
 
 `history_uris` に登録されている全件を対象におおむね 1分に一度の間隔で動作する。  
 ※ looper を使っているので厳密な時間ではない。
@@ -38,6 +39,13 @@
 - 失敗したデータに関しては、１件ずつ再送する
 - 再送も失敗した場合は送信不可電文として、専用のインターフェースに送信する
 - 送信が完了した `history_uris` は物理削除する。
+
+### データサンプル
+
+- 本APIで出力されるデータのサンプルを以下に記載している。
+
+[サンプル（EXCEL）](./files/db_sample1.xlsx)
+
 
 
 ## 決済系：決済実行
@@ -150,6 +158,26 @@ type に使用できるデータ。
  DB: `history_uris`, `history_slips` は作成されない。
 
 
+#### 異常ケース（QR）
+
+- 支払が失敗すると  `transactions` を "failed" に更新する。 
+- 通信不良などの場合は、結果不明とし、結果を再度問い合わせる画面となる。  
+  この照会の結果により `transactions` が "completed" | "failed" に更新される。　　
+- 再照会も結果不明の場合、再度問い合わせ画面を表示。以降ループ。  
+- 再度問い合わせる画面を中断すると  `transactions` を "completed" に更新する。  
+  この場合も `history_uris`、`history_slips` は作成されるが処理未了フラグが立つ。
+
+- カメラ読み取りのタイムアウトはない。
+
+  DB: `history_uris`, `history_slips` が作成されるのは以下の場合。
+
+  1. 成功
+  2. 処理未了
+
+- カメラ待ち画面でキャンセルボタンの押下をすると、 `transactions` を "stopped" に更新する。  
+ DB: `history_uris`, `history_slips` は作成されない。
+
+
 #### 利用できない状態
 
 - 業務開始状態でない場合は以下のエラーを返す  
@@ -160,15 +188,6 @@ type に使用できるデータ。
   `status code : 400 , error code : PAYMENT_METHOD_UNAVAILABLE`
 - 電文重複キーが同一のものが送信された場合、以下のエラーを返す
   `status code : 400 , error code : TRANSACTION_EXECUTED`
-
-
-#### データサンプル
-
-- 本APIで出力されるデータのサンプルを以下に記載している。
-
-[サンプル（EXCEL）](./files/db_sample1.xlsx)
-
-
 
 
 ## 決済系：決済取得
@@ -278,6 +297,8 @@ type に使用できるデータ。
 
 - 金額や金種は指定した取引のものが採用される。
 
+- QRの場合は再度の読み取りは求めず、APIをコール後、即処理が実行される。
+
 
 #### 異常ケース（クレジット）
 
@@ -307,6 +328,22 @@ type に使用できるデータ。
 
 - 待ち画面でキャンセルボタンの押下をすると、 `transactions` を "stopped" に更新する。  
  DB: `history_uris`, `history_slips` は作成されない。
+
+#### 異常ケース（QR）
+
+- 取消が失敗すると  `transactions` を "failed" に更新する。 
+- 通信不良などの場合は、結果不明とし、結果を再度問い合わせる画面となる。  
+  この照会の結果により `transactions` が "completed" | "failed" に更新される。　　
+- 再照会も結果不明の場合、再度問い合わせ画面を表示。以降ループ。  
+- 再度問い合わせる画面を中断すると  `transactions` を "completed" に更新する。  
+  この場合も `history_uris`、`history_slips` は作成されるが処理未了フラグが立つ。
+
+- カメラ読み取りのタイムアウトはない。
+
+  DB: `history_uris`, `history_slips` が作成されるのは以下の場合。
+
+  1. 成功
+  2. 処理未了
 
 
 #### 利用できない状態
