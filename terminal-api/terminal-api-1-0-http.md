@@ -1,7 +1,7 @@
 # HTTPサーバ
 
 - Terminal API は起動直後、HTTP の listen を開始する。  
-  このエンドポイントに対し、APIをコールできる。  
+  このエンドポイントに対し、通信を行うことでAPIをコールできる。  
 - 待ち受けポートは `8080` 固定。  
   当然アプリケーションを終了させると待ち受けも解除される。  
 - API によっては Terminal API アプリ上の UI が操作されるものがある。  
@@ -32,7 +32,7 @@
 | Transactions | /v1/transactions/{id} | GET | 取引の取得 |
 | Transactions | /v1/transactions | GET | 取引の一覧取得 |
 | Transactions | /v1/transactions/{id}/receipt | POST | 取引のレシート印刷 |
-| Terminal | /v1/terminal | GET | 端末情報取得 | 
+| Terminal | /v1/terminal | GET | 端末情報取得 | 　　
 | Terminal | /v1/terminal/status | GET | 端末ステータス取得 | 
 | Terminal | /v1/terminal/actions/reopen | POST | 再開局 | 
 | Terminal | 端末系：業務終了 | /v1/terminal/actions/shutdown | POST | |
@@ -127,6 +127,9 @@
 
 [こちらから](./terminal-api-1-1-http-payment.md)
 
+### 取引系
+
+[こちらから](./terminal-api-1-2-http-transaction.md)
 
 ## 端末系：業務終了
 
