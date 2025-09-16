@@ -16,31 +16,56 @@
 
 ```
 {
-  "id": "20250905182040",
+  "id": "20250916180555",
   "exec": "payment",
   "amount": 1,
-  "status": "completed",
-  "transactionAt": "2025-09-05T18:20:40Z"
+  "status": "canceled",
+  "transactionAt": "2025-09-16T18:05:55Z",
   "method": "credit",
   "term_sequence": 1,
-  "idempotency_key": "20250905-01",
-  "credit":{
-     "brand": "クレジット",
-     "card_company": "AMEX CARD",
-     "card_no": "377784*****0903",
-     "card_exp_date": "XX/XX",
-     "credit_type": "IC"
-     "approval_no": "20",
-     "arc": "00",
-     "aid": "A000000025010402",
-     "apl": "AMEX"
+  "idempotency_key": "20250916-06",
+  "credit": {
+    "brand": "クレジット",
+    "card_company": "AMEX CARD",
+    "card_no": "377784*****0903",
+    "card_exp_date": "XX/XX",
+    "credit_type": "IC",
+    "approval_no": "37",
+    "arc": "00",
+    "aid": "A000000025010402",
+    "apl": "AMEX"
   }
 }
 ```
 
-|  |  |
-|---|---|
-| id | 取引ID |
+|  |  |  |
+|---|---|---|
+| id | 取引ID | |
+| exec | 取引内容 | "payment", "cancel" |
+| amount | 取引金額 | |
+| status | 取引の状態 | "processing", "completed", "failed", "canceled", "stopped", "unknown" |
+| transaction_at | 取引の日時 |  yyyy-MM-ddTHH:mm:ssZ |
+| method | 決済手段 | "credit" など |
+| term_sequence | 端末通番 | 1 ~ 999 |
+| (oneof) | (金種固有データ) | 決済が行われていないとこのエリアのデータは null  |
+
+- 金種固有データ  
+このエリアは決済手段により異なる。
+
+  - credit  
+    | | |
+    |---|---|
+    | brand | クレジットカードブランド "VISA" など |
+    | card_company | カード発行会社 |
+    | (TBD) | |
+
+
+
+
+
+- 取引金額は 1 ~ 999999.
+- 取引の状態の canceld は取消されると元取引がこの状態になる。
+- 
 
 #### 説明
 

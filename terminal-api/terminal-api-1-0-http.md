@@ -153,3 +153,45 @@
 - 終了時の処理を行い、端末をシャットダウンする。
 - この処理は history_aggregates に終了時刻を記録し、ローテーションする。
   
+
+
+
+## 	/v1/terminal/actions/inquireBalance	POST	残高照会
+
+?type=suica
+
+iD は対応していない
+
+
+{
+"id": "20250820131604",
+"amount": 1,
+"status": "processing",
+"transaction_at": "2025-08-20T13:16:04Z"
+}
+
+Edy と nanaco は対応してない
+
+
+## 端末系：業務終了
+
+- 要求データ
+  ```
+  {
+    "show_confirm": true
+  }
+  ```
+  |  |  |
+  |---|---|
+  | show_confirm | 確認画面を表示する |
+
+- 応答データ
+  ```
+  {}
+  ```
+
+#### 説明
+
+- 終了時の処理を行い、端末をシャットダウンする。
+- この処理は history_aggregates に終了時刻を記録し、ローテーションする。
+  
