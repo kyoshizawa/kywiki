@@ -29,9 +29,9 @@
 | Payments | 決済系：決済取得 | /v1/payments/{id} | GET |  |
 | Payments | 決済系：決済の取消 | /v1/payments/{id}/cancel | POST |  |
 | Payments | 決済系：決済の中断 | /v1/payments/{id}/stop | POST | |
-| Transactions | /v1/transactions/{id} | GET | 取引の取得 |
-| Transactions | /v1/transactions | GET | 取引の一覧取得 |
-| Transactions | /v1/transactions/{id}/receipt | POST | 取引のレシート印刷 |
+| Transactions | 取引系：取引の取得 | /v1/transactions/{id} | GET | |
+| Transactions | 取引系：取引一覧取得 | /v1/transactions | GET | |
+| Transactions | 取引系：レシート印刷 | /v1/transactions/{id}/receipt | POST | |
 | Terminal | /v1/terminal | GET | 端末情報取得 | 　　
 | Terminal | /v1/terminal/status | GET | 端末ステータス取得 | 
 | Terminal | /v1/terminal/actions/reopen | POST | 再開局 | 

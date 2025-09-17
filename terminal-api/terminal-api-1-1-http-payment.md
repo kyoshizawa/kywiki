@@ -98,12 +98,12 @@ type に使用できるデータ。
 ||
 |---|
 | credit |
-| suica |
-| id |
-| waon |
-| nanaco |
 | edy |
+| id |
+| nanaco |
 | quicpay |
+| suica |
+| waon |
 | okica |
 | qr |
 

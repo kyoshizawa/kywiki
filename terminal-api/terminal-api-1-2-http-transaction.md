@@ -47,25 +47,68 @@
 | transaction_at | 取引の日時 |  yyyy-MM-ddTHH:mm:ssZ |
 | method | 決済手段 | "credit" など |
 | term_sequence | 端末通番 | 1 ~ 999 |
+| idempotency_key | 重複キー | |
 | (oneof) | (金種固有データ) | 決済が行われていないとこのエリアのデータは null  |
 
 - 金種固有データ  
-このエリアは決済手段により異なる。
+このエリアは決済手段により異なる。  
 
   - credit  
-    | | |
-    |---|---|
-    | brand | クレジットカードブランド "VISA" など |
-    | card_company | カード発行会社 |
-    | (TBD) | |
+    | | | |
+    |---|---|---|
+    | brand | クレジットカードブランド "VISA" など | BrandSign の変換値 | 
+    | card_company | カード会社 | Mst_CreditBinRange.PrintText |
+    | card_no | カード番号 | マスク済 |
+    | card_exp_date | カード有効期限 | マスク済 |
+    | credit_type | カード種別 | "IC" など |
+    | approval_no | 承認番号 | |
+    | arc | オーソリ結果コード | "00" など|
+    | aid | カード定義アプリケーションID | "A000000025010402"など カードから取得 |
+    | apl | カード定義アプリケーションラベル | "AMEX" など |  
 
+  - edy  
+    | | | |
+    |---|---|---|
+    | card_no | カード番号 | マスク済 | 
+    | before_balance | 取引前残高 |  |
+    | after_balance | 取引後残高 |  |
+    | edy_transaction_no | Edy専用取引番号 | "917140501" など シンクラ応答値 |
 
+  - id_card 
+    | | | |
+    |---|---|---|
+    | card_no | カード番号 | マスク済 | 
+    | card_exp_date | カード有効期限 | マスク済 |
 
+  - nanaco
+    | | | |
+    |---|---|---|
+    | card_no | カード番号 | マスク済 | 
+    | before_balance | 取引前残高 |  |
+    | after_balance | 取引後残高 |  |
 
+  - quicpay
+    | | | |
+    |---|---|---|
+    | card_no | カード番号 | マスク済 | 
+
+  - suica
+    | | | |
+    |---|---|---|
+    | card_no | カード番号 | マスク済 | 
+    | before_balance | 取引前残高 |  |
+    | after_balance | 取引後残高 |  |
+
+  - WAON
+    | | | |
+    |---|---|---|
+    | card_no | カード番号 | マスク済 | 
+    | before_balance | 取引前残高 |  |
+    | after_balance | 取引後残高 |  |
 
 - 取引金額は 1 ~ 999999.
 - 取引の状態の canceld は取消されると元取引がこの状態になる。
-- 
+- iD だけ プロパティ名が "id_card"。
 
 #### 説明
 
@@ -79,6 +122,65 @@
   `status code : 404 , error code : TRANSACTION_NOT_FOUND`
 
 
+## 取引一覧取得
+
+- 要求データ（URL）  
+
+```
+/v1/transactions?offset=0&limit=10
+```
+
+| | | |
+|---|---|---|
+| offset | 取得開始位置 | 任意：デフォルト 0 範囲 0 ~ |
+| limit | 取得件数 | 任意：デフォルト 10 範囲 1 ~ 1000 |
+
+
+- 応答データ
+
+```
+{
+  "transactions": [
+    {
+      "amount": 1,
+      "exec": "cancel",
+      "id": "20250917163403",
+      "idempotency_key": "20250917-17",
+      "method": "credit",
+      "status": "failed",
+      "transactionAt": "2025-09-17T16:34:03Z"
+    }
+  ],
+  "offset": 0,
+  "limit": 1,
+  "total": 18,
+  "has_next": true
+}
+```
+
+|  |  |  |
+|---|---|---|
+| offset | 取得開始位置 | |
+| limit | 取得件数 | |
+| count | 総件数 | |
+| has_next | 続きがあるか | offset + limit < count |
+| transactions | 取得したデータ | 取引取得と同様のスキーマ  |
+
+#### 説明
+
+- 取引情報を一覧で取得する。
+- 取得順は ID の降順となる。
+
+#### 利用できない状態
+
+- 不正なパラメータ指定の場合、以下のエラーを返す。  
+  `status code : 400 , error code : INVALID_PARAMS`
+
+  不正なパラメータとは以下を指す
+  - offset or limit が数値でない
+  - offset or limit が範囲外
+
+
 ## レシート印字
 
 
@@ -89,7 +191,7 @@
   ```
   |  |  |
   |---|---|
-  | id | 取引ID |
+  | id | 取引ID | 
 
 - 応答データ
   ```
@@ -114,4 +216,5 @@
 - 指定 id に該当するデータがない場合、以下のエラーを返す。  
   `status code : 404 , error code : TRANSACTION_NOT_FOUND`
 
-
+- 正常終了または処理未了以外のデータを出力しようとした場合、以下のエラーを返す。  
+  `status code : 400 , error code : RECEIPT_UNAVAILABLE`
