@@ -26,8 +26,8 @@
 |---|---|---|---|---|
 | - | ヘルスチェック | /v1/health-check | - | | 
 | Payments | 決済系：決済実行 | /v1/payments | POST | |
-| Payments | 決済系：決済取得 | /v1/payments/{id} | GET |  |
-| Payments | 決済系：決済の取消 | /v1/payments/{id}/cancel | POST |  |
+| Payments | 決済系：決済取得 | /v1/payments/{id} | GET | |
+| Payments | 決済系：決済の取消 | /v1/payments/{id}/cancel | POST | |
 | Payments | 決済系：決済の中断 | /v1/payments/{id}/stop | POST | |
 | Transactions | 取引系：取引の取得 | /v1/transactions/{id} | GET | |
 | Transactions | 取引系：取引一覧取得 | /v1/transactions | GET | |
@@ -38,8 +38,8 @@
 | Terminal | 端末系：業務終了 | /v1/terminal/actions/shutdown | POST | |
 | Terminal | /v1/terminal/actions/inquireBalance | POST | 残高照会 | 
 | Terminal | /v1/terminal/actions/charge | POST | チャージ |
-| Terminal | /v1/terminal/actions/softUpdate | POST | ソフトウェア更新 |
-| Terminal | 保守メニュー表示 | POST | /v1/terminal/actions/showMaintenance |
+| Terminal | ソフトウェア更新 | POST | /v1/terminal/actions/softUpdate | |
+| Terminal | 保守メニュー表示 | POST | /v1/terminal/actions/showMaintenance | |
 
 
 ## 共通事項

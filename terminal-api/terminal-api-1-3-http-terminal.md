@@ -82,6 +82,51 @@ Edy と nanaco は対応してない
 - この処理は history_aggregates に終了時刻を記録し、ローテーションする。
   
 
+
+## 端末系：ソフトウェア更新
+
+- HTTPメソッド  
+  POST
+
+- 要求データ（URL）
+  ```
+  /v1/terminal/actions/softUpdate
+  ```
+
+  なし
+
+- 応答データ  
+
+  　ストリーム配信
+
+    ```
+    : ping
+    progress:0
+    progress:25
+    progress:50
+    progress:75
+    progress:100
+    install:start
+    note:app-will-restart
+    completed
+    ```
+
+#### 説明
+
+- TerminalAPI のソフトウェア更新を試行する。
+- このAPIはまずサーバに最新バージョンを問い合わせる。   
+- サーバに公開されているものと比較し、自アプリの VersionCode が低いなら   
+  アップデート処理が行われる。
+- 同じか、それ以上ならこのAPIは何もしない。
+
+#### 利用できない状態
+
+- 既に更新ファイルダウンロード中なら以下のエラーを返す。  
+
+  `status code : 400 , error code : INVALID_SOFT_STATUS`
+
+
+
 ## 端末系：保守メニュー表示
 
 - HTTPメソッド  
@@ -111,5 +156,7 @@ Edy と nanaco は対応してない
 - この操作は Android の Intent を用いて行われるが、その際引数として、  
   TerminalAPI が所持している TerminalInfo を受け渡す。
 
-- 呼ばれた側の Activity は 初回なら onCreate() , 起動済なら onNewIntent() が実行される。
+- 呼ばれた側の Activity は 初回なら onCreate() が実行される。
+  既に保守メニューが前面にある場合、何も起きない。
+
 
