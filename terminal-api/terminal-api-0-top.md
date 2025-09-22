@@ -16,10 +16,12 @@
 ## ソフトウェア構成
 
 - TerminalAPI 単独 (+ MaintenanceAPP)
-
+  - TerminalAPI をクライアントからコールして利用する最小構成。
+  - MaintenanceAPP は必ずセットで出荷する。
+  
 ![構成](./img/structure-1.png)
 
-
+  
 
 
 ## 製品運用時構成

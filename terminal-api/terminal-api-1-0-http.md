@@ -32,14 +32,14 @@
 | Transactions | 取引系：取引の取得 | /v1/transactions/{id} | GET | |
 | Transactions | 取引系：取引一覧取得 | /v1/transactions | GET | |
 | Transactions | 取引系：レシート印刷 | /v1/transactions/{id}/receipt | POST | |
-| Terminal | /v1/terminal | GET | 端末情報取得 | 　　
+| Terminal | 端末系：端末情報取得 | /v1/terminal | GET |  | 　　
 | Terminal | /v1/terminal/status | GET | 端末ステータス取得 | 
 | Terminal | /v1/terminal/actions/reopen | POST | 再開局 | 
 | Terminal | 端末系：業務終了 | /v1/terminal/actions/shutdown | POST | |
 | Terminal | /v1/terminal/actions/inquireBalance | POST | 残高照会 | 
 | Terminal | /v1/terminal/actions/charge | POST | チャージ |
 | Terminal | /v1/terminal/actions/softUpdate | POST | ソフトウェア更新 |
-| Terminal | /v1/terminal/actions/showMaintenance | POST | 保守メニュー表示 |
+| Terminal | 保守メニュー表示 | POST | /v1/terminal/actions/showMaintenance |
 
 
 ## 共通事項
@@ -130,68 +130,3 @@
 ### 取引系
 
 [こちらから](./terminal-api-1-2-http-transaction.md)
-
-## 端末系：業務終了
-
-- 要求データ
-  ```
-  {
-    "show_confirm": true
-  }
-  ```
-  |  |  |
-  |---|---|
-  | show_confirm | 確認画面を表示する |
-
-- 応答データ
-  ```
-  {}
-  ```
-
-#### 説明
-
-- 終了時の処理を行い、端末をシャットダウンする。
-- この処理は history_aggregates に終了時刻を記録し、ローテーションする。
-  
-
-
-
-## 	/v1/terminal/actions/inquireBalance	POST	残高照会
-
-?type=suica
-
-iD は対応していない
-
-
-{
-"id": "20250820131604",
-"amount": 1,
-"status": "processing",
-"transaction_at": "2025-08-20T13:16:04Z"
-}
-
-Edy と nanaco は対応してない
-
-
-## 端末系：業務終了
-
-- 要求データ
-  ```
-  {
-    "show_confirm": true
-  }
-  ```
-  |  |  |
-  |---|---|
-  | show_confirm | 確認画面を表示する |
-
-- 応答データ
-  ```
-  {}
-  ```
-
-#### 説明
-
-- 終了時の処理を行い、端末をシャットダウンする。
-- この処理は history_aggregates に終了時刻を記録し、ローテーションする。
-  
