@@ -112,13 +112,13 @@
   | wifi_info | wifi情報（以下、リソース WifiInfo ） |
   | ethernet_info | イーサネット情報（以下、リソース EthernetInfo ） |
 
-#### Object1
+##### Object1
   |||
   |---|---|
   | enabled | 利用できるなら true |
   | method | credit, suica, id, waon, nanaco, edy, quicpay, okica, qr のいずれか |
   
-#### WifiInfo
+##### WifiInfo
   |||
   |---|---|
   | on | Wifiが on か |
@@ -127,11 +127,20 @@
   | signal_level | 電波レベル （RSSI を 0~4 に変換したもの） | 
   | ip_address | WIFIネットワーク上のIPアドレス |
   
-#### EthernetInfo
+##### EthernetInfo
   |||
   |---|---|
   | ip_address | LANネットワーク上のIPアドレス |
   
+
+#### 説明
+
+- 端末の基本情報を取得する。
+- 取得できるデータはあらかじめ設定されたマスタデータから、リソース状態などリアルタイムに変化するものまで様々である。
+- レシート情報などをクライアントが自前で構築する場合は、このAPIで得られる情報は  
+  必要な情報となる。
+
+
 
 
 ## 端末系：業務終了
