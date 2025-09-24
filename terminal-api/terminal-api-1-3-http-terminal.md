@@ -12,9 +12,126 @@
 
   なし
 
+- 応答データ
+  ```
+  {
+    "terminal_no": "3080902100007",
+    "device_no": "107",
+    "staff_no": "9999",
+    "product_code": "0000270",
+    "receipt_tel_no": "000-0000-0570",
+    "receipt_branch_office_name": "あんどう支社",
+    "receipt_sales_office_name": "あんどう営業所A",
+    "receipt_tax": 0.1,
+    "invoice_no": "T1234500000543",
+    "battery": 100,
+    "radio": 0,
+    "app_version": "1.0.0",
+    "storage_free_space": 9486,
+    "memory_free_space": 934,
+    "memory_usage": 845,
+    "uptime": 668,
+    "serial_no": "9320001597",
+    "model": "NEW9310Pro",
+    "os_version": "Android 13",
+    "firm_version": "bengal_32go-userdebug 13 TKQ1.221013.002 eng.panjp.20250814.194747 release-keys",
+    "payment_methods": [
+      {
+        "enabled": true,
+        "method": "credit"
+      },
+      {
+        "enabled": true,
+        "method": "suica"
+      },
+      {
+        "enabled": true,
+        "method": "id"
+      },
+      {
+        "enabled": true,
+        "method": "waon"
+      },
+      {
+        "enabled": true,
+        "method": "nanaco"
+      },
+      {
+        "enabled": true,
+        "method": "edy"
+      },
+      {
+        "enabled": true,
+        "method": "quicpay"
+      },
+      {
+        "enabled": false,
+        "method": "okica"
+      },
+      {
+        "enabled": true,
+        "method": "qr"
+      }
+    ],
+    "wifi_info": {
+      "ip_address": "192.168.251.25",
+      "on": true,
+      "signal_level": 4,
+      "signal_strength": -41,
+      "ssid": "MCI-AP01-WPA2"
+    },
+    "ethernet_info": {
+      "ip_address": ""
+    }
+  }
+  ```
+  |  |  |
+  |---|---|
+  | terminal_no | 出荷時設定された端末番号 |
+  | device_no | 出荷時設定された任意機器番号 |
+  | staff_no | 出荷時設定された係員番号 （現在変更方法なし） |
+  | product_code | 商品区分コード（クレジット決済に使用する） |
+  | receipt_tel_no | 出荷時設定された組織の電話番号（レシートに使用する）| 
+  | receipt_branch_office_name | 出荷時設定された組織の支社名（レシートに使用する）| 
+  | receipt_sales_office_name | 出荷時設定された組織の営業所名（レシートに使用する） |
+  | receipt_tax | 出荷時設定された組織の消費税率（レシートに使用する） |
+  | invoice_no | 出荷時設定された組織のインボイス番号（レシートに使用する） |
+  | battery | バッテリー残量（％） |
+  | radio | 電波強度（SIM利用時、アプリが前面時に更新） |
+  | app_version | アプリケーションのバージョン（ビルド時のversionName） |
+  | storage_free_space | ストレージ空き容量（MB） |
+  | memory_free_space | メモリ空き容量（MB） |
+  | memory_usage | メモリ使用量（MB） |
+  | uptime | ブートからの経過時間（秒） |
+  | serial_no | シリアル番号 |
+  | model | 端末モデル（"NEW9310Pro" など） |
+  | os_version | 端末のOSバージョン （"Android 13" など）|
+  | firm_version | OSのビルド情報 |
+  | mdns | 現状含まれない。バグ |
+  | payment_methods | マネーの利用可否（以下、リソース Object1 の配列） |
+  | wifi_info | wifi情報（以下、リソース WifiInfo ） |
+  | ethernet_info | イーサネット情報（以下、リソース EthernetInfo ） |
 
-
-
+#### Object1
+  |||
+  |---|---|
+  | enabled | 利用できるなら true |
+  | method | credit, suica, id, waon, nanaco, edy, quicpay, okica, qr のいずれか |
+  
+#### WifiInfo
+  |||
+  |---|---|
+  | on | Wifiが on か |
+  | ssid | 接続中のSSID |
+  | signal_strength | 電波強度 RSSI （–30 dBm … 最高レベル –90 dBm以下 … 通信困難） |
+  | signal_level | 電波レベル （RSSI を 0~4 に変換したもの） | 
+  | ip_address | WIFIネットワーク上のIPアドレス |
+  
+#### EthernetInfo
+  |||
+  |---|---|
+  | ip_address | LANネットワーク上のIPアドレス |
+  
 
 
 ## 端末系：業務終了
