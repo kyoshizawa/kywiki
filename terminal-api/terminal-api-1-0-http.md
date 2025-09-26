@@ -33,8 +33,8 @@
 | Transactions | 取引系：取引一覧取得 | /v1/transactions | GET | |
 | Transactions | 取引系：レシート印刷 | /v1/transactions/{id}/receipt | POST | |
 | Terminal | 端末系：端末情報取得 | /v1/terminal | GET |  | 　　
-| Terminal | /v1/terminal/status | GET | 端末ステータス取得 | 
-| Terminal | /v1/terminal/actions/reopen | POST | 再開局 | 
+| Terminal | 端末系：端末ステータス取得 | /v1/terminal/status | GET |  | 
+| Terminal | 端末系：再開局 | /v1/terminal/actions/reopen | POST |  | 
 | Terminal | 端末系：業務終了 | /v1/terminal/actions/shutdown | POST | |
 | Terminal | /v1/terminal/actions/inquireBalance | POST | 残高照会 | 
 | Terminal | /v1/terminal/actions/charge | POST | チャージ |
@@ -61,8 +61,6 @@
 - アプリケーションのアップデート中（apkダウンロード後のインストール中）は、以下のエラーを返却する。
 
   `status code : 400 , error code : APP_INSTALLING`
-
-- だが、実際は更新と同時にアプリケーションが終了し、 HTTP 待ち受けが閉じるので、このコード返却が再現されることはない。
 
 
 ## 業務状態

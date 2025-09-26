@@ -139,8 +139,51 @@
 - 取得できるデータはあらかじめ設定されたマスタデータから、リソース状態などリアルタイムに変化するものまで様々である。
 - レシート情報などをクライアントが自前で構築する場合は、このAPIで得られる情報は  
   必要な情報となる。
+- センターからの取得値を返しているため、通信不良時は特定の項目が空で応答される。
 
 
+## 端末系：端末ステータス取得
+
+- HTTPメソッド  
+  GET
+
+- 要求データ (URL)
+  ```
+  /vi/terminal/status
+  ```
+
+  なし
+
+- 応答データ
+  ```
+  {
+    "biz_status": "started",
+    "biz_started_at": "2025-09-26T10:08:38Z",
+    "open_status": "opened",
+    "open_at": "2025-09-26T10:08:38Z",
+    "soft_update_status": "latest"
+  }
+  ```
+
+  |  |  |
+  |---|---|
+  | biz_status | 業務状態 (stopped, starting, started, stopping) |
+  | biz_started_at | started になった時間 yyyy-MM-ddTHH:mm:ssZ |
+  | open_status | 開局状態 (closed, opening, opened, expired) |
+  | opened_at | opened になった時間 yyyy-MM-ddTHH:mm:ssZ |
+  | soft_update_status | ソフト更新状態 （latest, has_update, updating）| 
+
+
+#### 説明
+- 端末のステータスを取得。  
+  ステータスとは 業務状態 などを指す模様。
+- 業務状態と開局状態はほぼ同じ意味。
+- 業務状態は 起動時 stopeed で始まり、開局が終わると started になる。  
+  stopping になることはない。
+- 開局状態も 起動時 closed で始まり、業務状態 started と同じタイミングで opened になる。  
+  開局状態は ２４時間経過すると expired になる。  
+  設定により再開局が24時間後に行われる。
+- このAPIは Preference に書かれているステータスを応答する。
 
 
 ## 端末系：業務終了
