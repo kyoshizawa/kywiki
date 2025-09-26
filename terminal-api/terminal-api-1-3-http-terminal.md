@@ -1,14 +1,18 @@
-# 端末系
+# 端末系エンドポイント情報
 
 ## 端末系：端末情報取得
 
-- HTTPメソッド  
-  GET
+- URL 
+  ```
+  /v1/terminal
+  ```
 
-- 要求データ (URL)
+- HTTPメソッド  
   ```
-  /vi/terminal
+  GET
   ```
+
+- 要求データ
 
   なし
 
@@ -108,49 +112,55 @@
   | os_version | 端末のOSバージョン （"Android 13" など）|
   | firm_version | OSのビルド情報 |
   | mdns | 現状含まれない。バグ |
-  | payment_methods | マネーの利用可否（以下、リソース Object1 の配列） |
-  | wifi_info | wifi情報（以下、リソース WifiInfo ） |
-  | ethernet_info | イーサネット情報（以下、リソース EthernetInfo ） |
+  | payment_methods | 【マネーの利用可否】配列（以下、リソース Object1 の配列） |
+  | wifi_info | 【wifi情報】（以下、リソース WifiInfo ） |
+  | ethernet_info | 【イーサネット情報】（以下、リソース EthernetInfo ） |
 
-##### Object1
+- オブジェクト： 【マネーの利用可否】
+
   |||
   |---|---|
   | enabled | 利用できるなら true |
   | method | credit, suica, id, waon, nanaco, edy, quicpay, okica, qr のいずれか |
   
-##### WifiInfo
-  |||
-  |---|---|
-  | on | Wifiが on か |
-  | ssid | 接続中のSSID |
-  | signal_strength | 電波強度 RSSI （–30 dBm … 最高レベル –90 dBm以下 … 通信困難） |
-  | signal_level | 電波レベル （RSSI を 0~4 に変換したもの） | 
-  | ip_address | WIFIネットワーク上のIPアドレス |
+-  オブジェクト：　【Wifi情報】  
   
-##### EthernetInfo
-  |||
-  |---|---|
-  | ip_address | LANネットワーク上のIPアドレス |
+    |||
+    |---|---|
+    | on | Wifiが on か |
+    | ssid | 接続中のSSID |
+    | signal_strength | 電波強度 RSSI （–30 dBm … 最高レベル –90 dBm以下 … 通信困難） |
+    | signal_level | 電波レベル （RSSI を 0~4 に変換したもの） | 
+    | ip_address | WIFIネットワーク上のIPアドレス |  
+   
+-  オブジェクト：　【イーサネット情報】 
+
+    |||
+    |---|---|
+    | ip_address | LANネットワーク上のIPアドレス |
   
 
 #### 説明
 
 - 端末の基本情報を取得する。
 - 取得できるデータはあらかじめ設定されたマスタデータから、リソース状態などリアルタイムに変化するものまで様々である。
-- レシート情報などをクライアントが自前で構築する場合は、このAPIで得られる情報は  
-  必要な情報となる。
+- レシート情報などをクライアントが自前で構築する場合は、このAPIで得られる情報は必要な情報となる。
 - センターからの取得値を返しているため、通信不良時は特定の項目が空で応答される。
 
 
 ## 端末系：端末ステータス取得
 
-- HTTPメソッド  
-  GET
+- URL  
+  ```
+  /v1/payments/status
+  ```
 
-- 要求データ (URL)
+- HTTPメソッド  
   ```
-  /vi/terminal/status
+  GET
   ```
+
+- 要求データ
 
   なし
 
@@ -177,8 +187,7 @@
 #### 説明
 - 端末のステータスを取得。  
   ステータスとは 業務状態 などを指す模様。
-- 業務状態と開局状態はほぼ同じ意味。
-- 業務状態は 起動時 stopeed で始まり、開局が終わると started になる。  
+- 業務状態は 起動時 stopeed で始まり、起動処理が終わると started になる。  
   stopping になることはない。
 - 開局状態も 起動時 closed で始まり、業務状態 started と同じタイミングで opened になる。  
   開局状態は ２４時間経過すると expired になる。  
@@ -188,14 +197,18 @@
 
 ## 端末系：再開局
 
-- HTTPメソッド  
-  POST
-  
-- 要求データ (body)  
+- URL  
+  ```
+  /v1/terminal/actions/reopen
+  ```
 
+- HTTPメソッド  
   ```
-  { }
+  POST
   ```
+
+- 要求データ
+
   なし
 
 - 応答データ（body）
@@ -206,10 +219,12 @@
   なし
 
 #### 説明
+
 - アプリ起動時に実行される開局処理を手動で再実行する。
-- 
+- 設定があれば24時間ごとの自動再開局が行われるため、設定OFFの場合に使用することになる。
 
 #### 利用できない状態
+
 - 業務状態が開始済でないなら、以下のエラーを返す  
   `status code : 400 , error code : INVALID_BIZ_STATUS`
 
@@ -219,8 +234,15 @@
 
 ## 端末系：業務終了
 
+- URL  
+  ```
+  /v1/terminal/actions/shutdown
+  ```
+
 - HTTPメソッド  
+  ```
   POST
+  ```
 
 - 要求データ（body）
   ```
@@ -236,6 +258,7 @@
   ```
   {}
   ```
+  なし
 
 #### 説明
 
@@ -260,16 +283,21 @@
 
 ## 端末系：残高照会
 
-- HTTPメソッド
-  POST
-
-- 要求データ（URL）
+- URL
   ```
   /v1/terminal/actions/inquireBalance?type={type}
   ```
-|  | |
-|---|---|
-| type | 金種 (suica, waon, nanaco, edy, okica) |
+
+- HTTPメソッド
+  ```
+  POST
+  ```
+
+- 要求データ（URL）
+
+  |  | |
+  |---|---|
+  | type | 金種 (suica, waon, nanaco, edy, okica) |
 
 - 応答データ
   ```
@@ -284,15 +312,22 @@
 
 
 #### 利用できない状態
-- 開局されていない場合、以下のエラーを返す
+- 開局されていない場合、以下のエラーを返す  
    `status code : 400 , error code : INVALID_OPEN_STATUS`
 - 使えない金種の場合、以下のエラーを返す。  
    `status code : 400 , error code : PAYMENT_METHOD_UNAVAILABLE`
 
 ## 端末系：チャージ
 
+- URL  
+  ```
+  /v1/terminal/actions/charge
+  ```
+
 - HTTPメソッド
+  ```
   POST
+  ```
 
 - 要求データ（body）
   ```
@@ -320,13 +355,17 @@
 
 ## 端末系：ソフトウェア更新
 
-- HTTPメソッド  
-  POST
-
-- 要求データ（URL）
+- URL
   ```
   /v1/terminal/actions/softUpdate
   ```
+
+- HTTPメソッド  
+  ```
+  POST
+  ```
+
+- 要求データ
 
   なし
 
@@ -353,6 +392,7 @@
 - サーバに公開されているものと比較し、自アプリの VersionCode が低いなら   
   アップデート処理が行われる。
 - 同じか、それ以上ならこのAPIは何もしない。
+- 設定が有効なら自動ソフト更新になるため、設定OFFの場合使用するケースがある
 
 #### 利用できない状態
 
@@ -364,20 +404,23 @@
 
 ## 端末系：保守メニュー表示
 
-- HTTPメソッド  
-  POST
+- URL  
+  ```
+  /v1/terminal/actions/showMaintenance
+  ```
 
-- 要求データ (URL)
+- HTTPメソッド  
   ```
-  /vi/terminal/actions/showMaintenance
+  POST
   ```
+
+- 要求データ
 
   なし
 
 - 応答データ
   ```
-  {
-  }
+  {}
   ```
   なし
 
