@@ -1,94 +1,18 @@
-# 決済系
-
-## 決済系留意事項
-
-### 操作可否
-
-決済APIは取り扱う金種ごとに可能な操作が定義されている。  
-以下は、取り扱える金種と利用可否をまとめたもの。  
-
-| 金種 | 支払 | 取消 | 残額照会 | チャージ |
-|---|---|---|---|---|
-| クレジット | 〇 | 〇 | 　 | 　 |
-| Edy | 〇 | 　 | 〇 | 　 |
-| iD | 〇 | 〇 | 　 | 　 |
-| nanaco | 〇 | 　 | 〇 | 　 |
-| QuicPay | 〇 | 〇 | 　 | 　 |
-| 交通系 | 〇 | 〇 | 〇 | 　 |
-| WAON | 〇 | 〇 | 〇 | 　 |
-| QR | 〇 | 〇 | 　 | 　 |
-
-- OKICA は現状 TerminalAPI 単独の構成では使用できない。  
-※ 開局処理の関係  
-- チャージは OKICA のみ対応している。
-
-### 端末通番
-アプリケーション上で採番される。  
-範囲は 1 ~ 999 でローテーションする。
-- 通番の最新値は preference に保存されている。  
-  設定名は "term_sequence"。
-
-### 売上送信
-売上送信は　Background Task で行われている。  
-全ての金種で同様の動作。
-
-`history_uris` に登録されている全件を対象におおむね 1分に一度の間隔で動作する。  
-※ looper を使っているので厳密な時間ではない。
-
-- 電文は１０件ずつ送信する
-- 失敗したデータに関しては、１件ずつ再送する
-- 再送も失敗した場合は送信不可電文として、専用のインターフェースに送信する
-- 送信が完了した `history_uris` は物理削除する。
-
-### 処理未了
-
-- 電子マネー、および、QR では処理未了の特殊動作が実装されている。
-
-#### 基本ケース
-- 処理未了が発生すると、"もう一度タッチしてください" のアナウンスと共に再かざしを求める。
-- 再かざしの結果、処理成功すると通常のデータとなる。
-- 取消の場合は、再かざしを求めるが、未了データは発生しない。
-
-#### マネー毎特殊運用
-
-- edy   
-  edy はタイムアウトが確認できなかった。  
-  しばらくすると再かざし画面に中止ボタンが現れ、押されると普通に中止の処理となる。  
-  残額照会とからめて運用する？
-
-- iD  
-  処理未了がない。再かざしに遷移しない。
-
-- nanaco   
-  nanaco はタイムアウトが確認できなかった。  
-  しばらくすると再かざし画面に中止ボタンが現れ、押されると処理未了となる。  
-  処理未了取引は status = "unknown" となる。
-
-- suica  
-  再かざしがタイムアウトまで行われなかった場合、処理未了取引となる。  
-  処理未了取引は status = "unknown" となる。
-
-- WAON
-  しばらくすると再かざし画面に中止ボタンが現れ、押されると処理未了となる。  
-  処理未了取引は status = "stopped" となる。（バグ？
-
-
-
-
-### データサンプル
-
-- 本APIで出力されるデータのサンプルを以下に記載している。
-
-[サンプル（EXCEL）](./files/db_sample1.xlsx)
-
-
+# 決済系エンドポイント情報
 
 ## 決済系：決済実行
 
-- HTTPメソッド  
-  POST
+- URL  
+  ```
+  /v1/payments
+  ```
 
-- ヘッダ  
+- HTTPメソッド  
+  ```
+  POST
+  ```
+
+- 要求データ（Header）  
   ```
   Idempotency-Key: {string}
   ```
@@ -96,7 +20,7 @@
   |---|---|
   | Idempotency-Key | 電文重複キー |
 
-- 要求データ (body)
+- 要求データ（body）
   ```
   {
     "type": "suica",
@@ -126,21 +50,19 @@
   | status | 状態 |
   | transaction_at | 取引日時 |
 
+- 定数値：type
 
-- 定数値
-type に使用できるデータ。
-
-||
-|---|
-| credit |
-| edy |
-| id |
-| nanaco |
-| quicpay |
-| suica |
-| waon |
-| okica |
-| qr |
+  | |  
+  |---|
+  | credit |
+  | edy |
+  | id |
+  | nanaco |
+  | quicpay |
+  | suica |
+  | waon |
+  | okica |
+  | qr |
 
 
 #### 説明
@@ -150,7 +72,7 @@ type に使用できるデータ。
 
 - 画面表示時に、DB: `transactions` を新規登録する。初期状態は "processing"。
 
-- 支払い待ち画面のタイムアウト値は３０秒。
+- 支払い待ち画面のタイムアウト値は30秒。
 
 - 支払操作が完了（成功）すると  `transactions` を "complated" に更新し、金種固有の情報と共に保存を行う。  
   また、DB: `history_uris`, `history_slips` を作成する。
@@ -158,7 +80,7 @@ type に使用できるデータ。
 
 - 作成された `history_uris` は売上データである。作成後、BackgroundTask で直ちにセンター送信される。
 
-
+- 作成された `history_slips` はレシート用履歴データである。
 
 #### 異常ケース（クレジット）
 
@@ -169,7 +91,7 @@ type に使用できるデータ。
   2. オーソリ送信以降の失敗： 作成される
 
 - 支払い待ち画面で何らかの要因でキャンセルすると、 `transactions` を "stopped" に更新する。  
- DB: `history_uris`, `history_slips` は作成されない。
+ その場合 DB: `history_uris`, `history_slips` は作成されない。
 
   キャンセル要因は以下。
   1. タイムアウト
@@ -182,7 +104,7 @@ type に使用できるデータ。
 #### 異常ケース（電子マネー）
 
 - 支払が失敗すると  `transactions` を "failed" に更新する。   
-  電子マネーはタイムアウトでも "failed" になる。
+  ※ 電子マネーはタイムアウトでも "failed" になる。
 
   DB: `history_uris`, `history_slips` が作成されるのは以下の場合。
 
@@ -190,7 +112,7 @@ type に使用できるデータ。
   2. 処理未了
 
 - 支払い待ち画面でキャンセルボタンの押下をすると、 `transactions` を "stopped" に更新する。  
- DB: `history_uris`, `history_slips` は作成されない。
+ その場合 DB: `history_uris`, `history_slips` は作成されない。
 
 
 #### 異常ケース（QR）
@@ -198,13 +120,13 @@ type に使用できるデータ。
 - 支払が失敗すると  `transactions` を "failed" に更新する。 
 - 通信不良などの場合は、結果不明とし、結果を再度問い合わせる画面となる。  
   この照会の結果により `transactions` が "completed" | "failed" に更新される。　　
-- 再照会も結果不明の場合、再度問い合わせ画面を表示。以降ループ。  
+- 再照会も結果不明の場合、再度問い合わせ画面を表示。以降ループする。  
 - 再度問い合わせる画面を中断すると  `transactions` を "completed" に更新する。  
   この場合も `history_uris`、`history_slips` は作成されるが処理未了フラグが立つ。
 
 - カメラ読み取りのタイムアウトはない。
 
-  DB: `history_uris`, `history_slips` が作成されるのは以下の場合。
+- DB: `history_uris`, `history_slips` が作成されるのは以下の場合。
 
   1. 成功
   2. 処理未了
@@ -221,19 +143,24 @@ type に使用できるデータ。
   `status code : 409 , error code : TRANSACTION_IN_PROGRESS`
 - 指定の金種が使えない状態の場合以下のエラーを返す  
   `status code : 400 , error code : PAYMENT_METHOD_UNAVAILABLE`
-- 電文重複キーが同一のものが送信された場合、以下のエラーを返す
+- 電文重複キーが同一のものが送信された場合、以下のエラーを返す  
   `status code : 400 , error code : TRANSACTION_EXECUTED`
 
 
 ## 決済系：決済取得
 
-- HTTPメソッド  
-  GET
+- URL  
+  ```
+  /v1/payments/{id}
+  ```
 
-- 要求データ (URL)
+- HTTPメソッド  
   ```
-  /vi/payments/{id}
+  GET
   ```
+
+- 要求データ（URL）
+
   |  |  |
   |---|---|
   | id | 取引ID |
@@ -273,10 +200,17 @@ type に使用できるデータ。
 
 ## 決済系：決済の取消
 
-- HTTPメソッド  
-  POST
+- URL  
+  ```
+  /v1/payments/{id}/cancel
+  ```
 
-- ヘッダ  
+- HTTPメソッド 
+  ``` 
+  POST
+  ```
+
+- 要求データ（Header）  
   ```
   Idempotency-Key: {string}
   ```
@@ -294,7 +228,7 @@ type に使用できるデータ。
   | id | 取引ID |
 
 
-- 要求データ (body)  
+- 要求データ（body） 
 
   ```
   { }
@@ -317,7 +251,7 @@ type に使用できるデータ。
 #### 説明
 
 - 指定した取引IDの取消を行うために、TerminalAPI上のUIで取消待ち画面を表示する。  
-  画面には 種別： 取消 の文字が出る点が決済と違う。
+  画面には "種別： 取消" の文字が出る点が決済と違う。
 
 - 取消できるデータには条件がある。  
   以下の "利用できない状態" の項を参考。
@@ -332,12 +266,12 @@ type に使用できるデータ。
 
 - 金額や金種は指定した取引のものが採用される。
 
-- QRの場合は再度の読み取りは求めず、APIをコール後、即処理が実行される。
+- QRの場合は再度の媒体読み取りは求めず、APIをコール後、即処理が実行される。
 
 
 #### 異常ケース（クレジット）
 
-- 当然だが、媒体は支払い時と同様のものを使う必要がある。
+- 当然だが、媒体は支払い時と同様のものを使う必要がある。  
   別媒体で取り消そうとするとエラーとなる。
 
 - 支払と同様に、失敗すると  `transactions` を "failed" に更新する。  
@@ -375,7 +309,7 @@ type に使用できるデータ。
 
 - カメラ読み取りのタイムアウトはない。
 
-  DB: `history_uris`, `history_slips` が作成されるのは以下の場合。
+- DB: `history_uris`, `history_slips` が作成されるのは以下の場合。
 
   1. 成功
   2. 処理未了
@@ -391,31 +325,35 @@ type に使用できるデータ。
   `status code : 400 , error code : TRANSACTION_EXECUTED`
 - 指定 id に該当するデータがない場合、以下のエラーを返す。  
   `status code : 400 , error code : TRANSACTION_NOT_FOUND`
-- 取消できないブランドの場合以下のエラーを返す  
+- 取消できないブランドの場合以下のエラーを返す   
   `status code : 400 , error code : REFUND_NOT_SUPPORTED`
-- 支払でない取引が指定された場合以下のエラーを返す
+- 支払でない取引が指定された場合以下のエラーを返す  
   `status code : 400 , error code : INVALID_TRANSACTION_TYPE`
 - 完了でない取引が指定された場合以下のエラーを返す  
   `status code : 400 , error code : PAYMENT_NOT_COMPLETED`
-- すでに取り消しされている場合以下のエラーを返す
+- すでに取り消しされている場合以下のエラーを返す  
   `status code : 400 , error code : PAYMENT_CANCELED`
 
 
 
 ## 決済系：決済の中断
 
-- HTTPメソッド  
-  POST
+- URL  
+  ```
+  /v1/payments/{id}/stop
+  ```
 
-- 要求データ (URL)
+- HTTPメソッド  
   ```
-  /vi/payments/{id}/stop
+  POST
   ```
+
+- 要求データ（URL）
   |  |  |
   |---|---|
   | id | 取引ID |
 
-- 要求データ (body)  
+- 要求データ（body） 
 
   ```
   { }
