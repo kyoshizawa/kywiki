@@ -52,36 +52,40 @@ TerminalAPI は主に以下の種類の処理が実装されている。
 　　
 　　
 　
-
-## ビルド
+## 開発時情報
+### ビルド
 
 - リポジトリ  
+  
   https://github.com/MobileCreate/pay_terminal.git  
+
   `develop` が開発用ブランチ
 
 - JDK  
+  
   gradle の設定を JDK 17 使用し、デバッグ実行を確認。  
-
 
   - ※ ちなみに MultiPaymentProject2025 は JDK 11 。
 
-
 - keystore  
+
   apk ファイルの署名情報を key.properties から取得しているが、
   この情報はセキュリティ留意のため、ソースリポジトリに含んでいない。  
-  以下のフォルダに配置しているため、ビルドの際は このファイルを ソースフォルダのルートに配置すること。
+  本wikiの以下のフォルダに配置しているため、ビルドの際はこのファイルをソースフォルダのルートに配置すること。
 
-```
-key_properties/terminal_api/key.properties
-```
+  ```
+  key_properties/terminal_api/key.properties
+  ```
 
-- Android 5 
+- Android 5 対応  
   特に Android 5 でのビルド時も上記を変える必要はない。
   
 
+
+
 ## 内部構成
 
-まだ編集中です。
+TODO : まだ編集中です。
 
 ![構成２](./img/internal-structure.png)
 
