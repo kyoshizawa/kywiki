@@ -219,48 +219,6 @@
 
 ## 端末系：業務終了
 
-- 要求データ
-  ```
-  {
-    "show_confirm": true
-  }
-  ```
-  |  |  |
-  |---|---|
-  | show_confirm | 確認画面を表示する |
-
-- 応答データ
-  ```
-  {}
-  ```
-
-#### 説明
-
-- 終了時の処理を行い、端末をシャットダウンする。
-- この処理は history_aggregates に終了時刻を記録し、ローテーションする。
-  
-
-
-
-## 	/v1/terminal/actions/inquireBalance	POST	残高照会
-
-?type=suica
-
-iD は対応していない
-
-
-{
-"id": "20250820131604",
-"amount": 1,
-"status": "processing",
-"transaction_at": "2025-08-20T13:16:04Z"
-}
-
-Edy と nanaco は対応してない
-
-
-## 端末系：業務終了
-
 - HTTPメソッド  
   POST
 
@@ -286,16 +244,54 @@ Edy と nanaco は対応してない
   規定値は true。
 - この処理は history_aggregates に終了時刻を記録し、ローテーションする。
 
+- edy, nanaco, quicpay が利用できる場合、それぞれの終了処理が実行される。
+  
 
 #### 利用できない状態
 
 - シャットダウンできない状態ならエラーを返す。
 
-  `status code : 400 , error code : INVALID_SOFT_STATUS`
+  `status code : 400 , error code : SHUTDOWN_NOT_ALLOWED`
 
 - "シャットダウンできない状態" とは、具体的には以下を指す。
   - 決済 / 取消処理中
   - 残高照会中
+
+
+## 端末系：残高照会
+
+
+
+
+
+
+## 端末系：チャージ
+
+- HTTPメソッド
+  POST
+
+- 要求データ（body）
+  ```
+  {
+    "type": "okica",
+    "amount": 1000
+  }
+  ```
+
+- 応答データ
+  ```
+  {
+    "id": "1",
+    "amount": 10000,
+    "status": "processing",
+    "transaction_at": "2024-02-20T12:00:00Z",
+    "term_sequence": 123
+  }
+  ```
+
+#### 説明
+
+・チャージは現在 OKICA のみ + 決済アプリとセットの構成でしか動作しない
 
 
 ## 端末系：ソフトウェア更新

@@ -37,7 +37,7 @@
 | Terminal | 端末系：再開局 | /v1/terminal/actions/reopen | POST |  | 
 | Terminal | 端末系：業務終了 | /v1/terminal/actions/shutdown | POST | |
 | Terminal | /v1/terminal/actions/inquireBalance | POST | 残高照会 | 
-| Terminal | /v1/terminal/actions/charge | POST | チャージ |
+| Terminal | 端末系：チャージ | /v1/terminal/actions/charge | POST |  |
 | Terminal | ソフトウェア更新 | POST | /v1/terminal/actions/softUpdate | |
 | Terminal | 保守メニュー表示 | POST | /v1/terminal/actions/showMaintenance | |
 
