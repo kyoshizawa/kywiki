@@ -1,57 +1,64 @@
-# 取引系
+# 取引系エンドポイント情報
 
-## 取引の取得
+## 取引系：取引の取得
+
+- URL
+  ```
+  /v1/transactions/{id}
+  ```
+
+- HTTPメソッド 
+  ```
+  GET
+  ```
 
 - 要求データ（URL）  
 
-```
-/vi/transactions/{id}
-```
-
-|  |  |
-|---|---|
-| id | 取引ID |
+  |  |  |
+  |---|---|
+  | id | 取引ID |
 
 - 応答データ
 
-```
-{
-  "id": "20250916180555",
-  "exec": "payment",
-  "amount": 1,
-  "status": "canceled",
-  "transactionAt": "2025-09-16T18:05:55Z",
-  "method": "credit",
-  "term_sequence": 1,
-  "idempotency_key": "20250916-06",
-  "credit": {
-    "brand": "クレジット",
-    "card_company": "AMEX CARD",
-    "card_no": "377784*****0903",
-    "card_exp_date": "XX/XX",
-    "credit_type": "IC",
-    "approval_no": "37",
-    "arc": "00",
-    "aid": "A000000025010402",
-    "apl": "AMEX"
+  ```
+  {
+    "id": "20250916180555",
+    "exec": "payment",
+    "amount": 1,
+    "status": "canceled",
+    "transactionAt": "2025-09-16T18:05:55Z",
+    "method": "credit",
+    "term_sequence": 1,
+    "idempotency_key": "20250916-06",
+    "credit": {
+      "brand": "クレジット",
+      "card_company": "AMEX CARD",
+      "card_no": "377784*****0903",
+      "card_exp_date": "XX/XX",
+      "credit_type": "IC",
+      "approval_no": "37",
+      "arc": "00",
+      "aid": "A000000025010402",
+      "apl": "AMEX"
+    }
   }
-}
-```
+  ```
 
-|  |  |  |
-|---|---|---|
-| id | 取引ID | |
-| exec | 取引内容 | "payment", "cancel" |
-| amount | 取引金額 | |
-| status | 取引の状態 | "processing", "completed", "failed", "canceled", "stopped", "unknown" |
-| transaction_at | 取引の日時 |  yyyy-MM-ddTHH:mm:ssZ |
-| method | 決済手段 | "credit" など |
-| term_sequence | 端末通番 | 1 ~ 999 |
-| idempotency_key | 重複キー | |
-| (oneof) | (金種固有データ) | 決済が行われていないとこのエリアのデータは null  |
+  |  |  |  |
+  |---|---|---|
+  | id | 取引ID | |
+  | exec | 取引内容 | "payment", "cancel" |
+  | amount | 取引金額 | |
+  | status | 取引の状態 | "processing", "completed", "failed", "canceled", "stopped", "unknown" |
+  | transaction_at | 取引の日時 |  yyyy-MM-ddTHH:mm:ssZ |
+  | method | 決済手段 | "credit" など |
+  | term_sequence | 端末通番 | 1 ~ 999 |
+  | idempotency_key | 重複キー | |
+  | (oneof) | (金種固有データ) | 決済が行われていないとこのエリアのデータは null  |
 
-- 金種固有データ  
-このエリアは決済手段により異なる。  
+- オブジェクト：金種固有データ  
+  
+  このエリアは決済手段により構造が異なる。  
 
   - credit  
     | | | |
@@ -106,14 +113,13 @@
     | before_balance | 取引前残高 |  |
     | after_balance | 取引後残高 |  |
 
-- 取引金額は 1 ~ 999999.
-- 取引の状態の canceld は取消されると元取引がこの状態になる。
-- iD だけ プロパティ名が "id_card"。
-
 #### 説明
 
 - 指定した取引IDの情報を取得する。
 - レシート印字に必要な情報が取得できるため、印字をクライアント依存で行う場合はこの情報を参照する。
+
+- "status" = "canceld" は取消された元データ。
+- `電子マネー iD` だけ プロパティ名が "id_card" なことに注意。
 
 
 #### 利用できない状態
@@ -122,54 +128,66 @@
   `status code : 404 , error code : TRANSACTION_NOT_FOUND`
 
 
-## 取引一覧取得
+## 取引系：取引一覧取得
+
+- URL
+  ```
+  /v1/transactions
+  ```
+
+- HTTPメソッド 
+  ```
+  GET
+  ```
 
 - 要求データ（URL）  
 
-```
-/v1/transactions?offset=0&limit=10
-```
+  ```
+  /v1/transactions?offset=0&limit=10
+  ```
 
-| | | |
-|---|---|---|
-| offset | 取得開始位置 | 任意：デフォルト 0 範囲 0 ~ |
-| limit | 取得件数 | 任意：デフォルト 10 範囲 1 ~ 1000 |
+  | | | |
+  |---|---|---|
+  | offset | 取得開始位置 | 任意：デフォルト 0 範囲 0 ~ |
+  | limit | 取得件数 | 任意：デフォルト 10 範囲 1 ~ 1000 |
 
 
 - 応答データ
 
-```
-{
-  "transactions": [
-    {
-      "amount": 1,
-      "exec": "cancel",
-      "id": "20250917163403",
-      "idempotency_key": "20250917-17",
-      "method": "credit",
-      "status": "failed",
-      "transactionAt": "2025-09-17T16:34:03Z"
-    }
-  ],
-  "offset": 0,
-  "limit": 1,
-  "total": 18,
-  "has_next": true
-}
-```
+  ```
+  {
+    "transactions": [
+      {
+        "amount": 1,
+        "exec": "cancel",
+        "id": "20250917163403",
+        "idempotency_key": "20250917-17",
+        "method": "credit",
+        "status": "failed",
+        "transactionAt": "2025-09-17T16:34:03Z"
+      }
+    ],
+    "offset": 0,
+    "limit": 1,
+    "total": 18,
+    "has_next": true
+  }
+  ```
 
-|  |  |  |
-|---|---|---|
-| offset | 取得開始位置 | |
-| limit | 取得件数 | |
-| count | 総件数 | |
-| has_next | 続きがあるか | offset + limit < count |
-| transactions | 取得したデータ | 取引取得と同様のスキーマ  |
+  |  |  |  |
+  |---|---|---|
+  | offset | 取得開始位置 | |
+  | limit | 取得件数 | |
+  | count | 総件数 | |
+  | has_next | 続きがあるか | offset + limit < count |
+  | transactions | 取得したデータ | 取引取得と同様のスキーマ  |
 
 #### 説明
 
 - 取引情報を一覧で取得する。
 - 取得順は ID の降順となる。
+- 一度にとれる量に限りがあるため、すべてのデータを取得するには offset, limit を指定し、
+  部分取得を複数回行う必要あり。
 
 #### 利用できない状態
 
@@ -181,14 +199,20 @@
   - offset or limit が範囲外
 
 
-## レシート印字
+## 取引系：レシート印字
 
+- URL
+  ```
+  /v1/transactions/{id}/receipt
+  ```
+
+- HTTPメソッド  
+  ```
+  POST
+  ```
 
 - 要求データ (URL)
 
-  ```
-  /vi/transactions/{id}/receipt
-  ```
   |  |  |
   |---|---|
   | id | 取引ID | 
@@ -202,11 +226,13 @@
 
 #### 説明
 
-- 指定した取引IDのレシート印刷を行う。レシート出力できる状態になっていない (= 正常・処理未了以外の) 取引が指定されるとエラーを返却する。
+- 指定した取引IDのレシート印刷を行う。  
+  レシート出力できる状態になっていない (= 正常・処理未了以外の) 取引が指定されるとエラーを返却する。
  
 - APIコール後、まず加盟店控えが印刷される。
 - UI上にダイアログが表示されるのでそれに同意すると、続けてお客様控えが印刷される。
-- 上記は正常取引の場合。処理未了の場合は専用のレシートが一度に出力され、同意ダイアログは出力されない。
+- 上記は正常取引の場合。
+  処理未了の場合は専用のレシートが一度に出力され、同意ダイアログは出力されない。
 
 
 - 印刷されるレイアウトは指定されたＩＤの取引の金種・取引内容（支払 / 取消）により変化する。
@@ -225,7 +251,7 @@
 | WAON |
 | qr |
 
-~~iD は処理未了がない。~~ iD , Edy, QuicPay は発生させることができなかった。  
+~~iD は処理未了がない。~~ iD , Edy, QuicPay はテスト時に発生させることができなかった。  
 
 
 #### 異常ケース
