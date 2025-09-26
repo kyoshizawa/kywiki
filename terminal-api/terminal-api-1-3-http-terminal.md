@@ -263,16 +263,31 @@
 - HTTPメソッド
   POST
 
-- 要求データ（body）
+- 要求データ（URL）
   ```
-  {
-    "type": "okica",
-    "amount": 1000
-  }
+  /v1/terminal/actions/inquireBalance?type={type}
   ```
+|  | |
+|---|---|
+| type | 金種 (suica, waon, nanaco, edy, okica) |
+
+- 応答データ
+  ```
+  {}
+  ```
+  なし
+
+#### 説明
+- 電子マネーの残高照会UIを呼び出す。
+- iD と quicpay は使用できない。
 
 
 
+#### 利用できない状態
+- 開局されていない場合、以下のエラーを返す
+   `status code : 400 , error code : INVALID_OPEN_STATUS`
+- 使えない金種の場合、以下のエラーを返す。  
+   `status code : 400 , error code : PAYMENT_METHOD_UNAVAILABLE`
 
 ## 端末系：チャージ
 
