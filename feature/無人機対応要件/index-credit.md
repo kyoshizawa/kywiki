@@ -922,3 +922,10 @@ ChatGPT:
 現場でも EMV 仕様書でもズレずに表現できますね。
 
 👉 必要なら「有人区分 × Terminal Type × 代表的な 9F33 設定」の対応表を作って、チームで共有できる形にしますか？
+
+
+
+## 端末能力
+
+No CVM の Terminal Capabilities : E008C8
+
