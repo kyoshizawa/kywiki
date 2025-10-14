@@ -113,6 +113,18 @@
     | before_balance | 取引前残高 |  |
     | after_balance | 取引後残高 |  |
 
+  - OKICA 
+    | | | |
+    |---|---|---|
+    | card_no | カード番号 | マスク済 | 
+    | before_balance | 取引前残高 |  |
+    | after_balance | 取引後残高 |  |
+
+  - QR 
+    | | | |
+    |---|---|---|
+    | brand | ブランド |  | 
+
 #### 説明
 
 - 指定した取引IDの情報を取得する。
@@ -178,7 +190,7 @@
   |---|---|---|
   | offset | 取得開始位置 | |
   | limit | 取得件数 | |
-  | count | 総件数 | |
+  | total | 総件数 | |
   | has_next | 続きがあるか | offset + limit < count |
   | transactions | 取得したデータ | 取引取得と同様のスキーマ  |
 

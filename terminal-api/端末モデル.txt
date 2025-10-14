@@ -1,0 +1,26 @@
+＜本番の terminal_models＞
+1,"PT-850","PT-850",False,1
+2,"Lenovo TB-8505X","Lenovo TB-8505X",False,1
+3,"PT-750","PT-750",False,1
+4,"TB300XU","Lenovo TB300XU",False,1
+5,"PT-750-VD","PT-750-VD",True,2
+
+＜検証＞
+1,"PT-850","PT-850",False,NULL
+2,"Lenovo TB-8505X","Lenovo TB-8505X",False,NULL
+3,"PT-750","PT-750",False,NULL
+4,"PT-750(VD)","PT-750(VD)",True,2
+
+＜開発＞
+1,"PT-850","PT-850",False,1
+2,"Lenovo TB-8505X","Lenovo TB-8505X",False,1
+3,"PT-750","PT-750",False,1
+4,"TB300XU","Lenovo TB300XU",False,1
+5,"BOSS","BOSS",False,1               -- 対象外
+6,"POS-REGI","POS-REGI",False,1       -- 対象外
+7,"PT-750-VD","PT-750-VD",True,2      
+8,"NEW9310Pro","NEW9310Pro",False,1   -- 対象外（トランジット実験用
+9,"PT-751","PT-751",False,1           -- 対象
+10,"PT-630","PT-630",False,1          -- 対象
+11,"PT-751-VD","PT-751-VD",True,2     -- 対象
+

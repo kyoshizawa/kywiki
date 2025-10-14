@@ -4,6 +4,8 @@
 
 Terminal Type = 9F35
 
+22 
+
 ## 端末能力
 
 Terminal Capabilities = 9F33

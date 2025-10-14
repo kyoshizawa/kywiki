@@ -135,7 +135,7 @@
 
 | シンボル名                           | 備考 |
 | ------------------------------- | -- |
-| id                              |  transactions.historySlipId  |
+| id                              |  slipId とは必ずとも一致しない  |
 | pos_send                        |    |
 | car_id                          |    |
 | driver_id                       |    |
