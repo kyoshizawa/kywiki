@@ -7,7 +7,6 @@ notion
 [電子サイン]  
 https://www.notion.so/XXX-2297cc578ba5800eae1ed87e2c934d3e
 
-
 [電子レシート]  
 https://www.notion.so/2157cc578ba580519d85c24a7c27ec93
 
