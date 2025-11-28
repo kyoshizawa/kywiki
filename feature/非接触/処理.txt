@@ -1,0 +1,75 @@
+
+response
+
+  GetRiskParameter
+
+'00', '35', '36', '37', '40', '50', '60'
+
+
+15001
+
+
+PayTerminalCredit.getRiskManagementParameter() ※ 見た感じこれが使われるのは AID , KernelId, toTLV()
+
+            9F01	Acquirer Identifier（非接触用の加盟店契約IDなど）
+            9F35	Terminal Type（端末タイプ: 21/22/23など）
+            9F1A	Terminal Country Code（端末国コード）
+            5F2A	Transaction Currency Code（通貨コード、例: 392）
+            5F36	Transaction Currency Exponent（小数桁、例: 2）
+
+       loadAidParam() の toTLV() で 設定されている！わかるか
+
+
+creditSettlement.startCredit()
+→
+creditSettlementHandle.START_CREDIT
+→
+creditSettlement.procCredit()
+→
+  IccStateMachine.changeStatus(STATUS_DETECT_CARD)
+  IccStateMachine.start()
+    → StateDetectCard.stateMethod()
+       → CardManager.getCard()
+
+mEmvContactlessCard
+
+creditSettlement.CardListener().callback()
+→ creditSettlementHandle.START_CL_PROC
+   → iccStateMachine.changeStatus(STATUS_CL_PROC)
+      IccStateMachine.start()
+      → StateCLProc.stateMethod()
+         → EmvCLProcess.startTransaction()  ※ これはカードを離すまで
+            → EmvCLCallbackHandle.init()
+               １つの p を２つに分けて詰めてる 支払と取消のためか。しらんけど
+            → EmvCLProcess.transactionSetData()
+               タグの金額とか
+         → _mcCenterCommManager.cardAnalyze()
+            → ParamManage.saveEmvConfig(res);
+      → StateCLOnlineAuth.stateMethod()
+
+
+
+◆ transaction limit を 15000 にして 15002 すると
+
+   EmvEpContactlessBuildCombinationに失敗 outcome=103 だった
+   EMV_NO_APP_SUPPORTED = 103;
+
+◆ transaction limit を 999999 , cvm limit = 15000 にして 15002 すると
+   EMV_REQUIRE_ONLINE = 107;
+
+◆ transaction limit を 999999 , cvm limit = 15000 にして 14000 すると
+   EMV_REQUIRE_ONLINE = 107;
+
+   かわらない
+
+
+
+
+
+◆ EMV L2 ライブラリ的には、現在設定されている cvm require limit による挙動の変更はなさそう。
+
+   自前で実装するべき → 実装していない。 が正体なのではないか。
+
+   過去にできてたというのは見間違えの可能性が高いが....
+
+   もし実装するなら EmvCLProcess の 
