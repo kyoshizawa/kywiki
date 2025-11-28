@@ -72,4 +72,10 @@ creditSettlement.CardListener().callback()
 
    過去にできてたというのは見間違えの可能性が高いが....
 
-   もし実装するなら EmvCLProcess の 
+◆ カードによって outcome = 116 になる。
+
+   このとき、MultiPaymentProject では エラー画面表示後、ホームに戻ってダイアログを出している。
+
+   内部コードは T31 で 表見は 3060 
+   
+
