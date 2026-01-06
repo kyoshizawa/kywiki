@@ -1,0 +1,94 @@
+# suica 試験
+e6b69781-3dcb-413b-87a4-ad1d90e1ae8c {"after_balance":18923,"before_balance":18924,"card_no":"JK***********0021","card_trans_number":2041,"customer_card_no":"JK***********0021","term_ident_id":"JE10710805376"}
+88159178-7910-42ac-8b6d-110ccc71dff9 {"after_balance":18924,"before_balance":18923,"card_no":"JK***********0021","card_trans_number":2042,"customer_card_no":"JK***********0021","term_ident_id":"JE10710805376"}
+
+# waon 試験
+5a8ff110-b12f-4498-8fc6-5d6d2986270b {"after_balance":13437,"before_balance":13438,"card_no":"****170036476647","card_trans_number":997,"customer_card_no":"************6647","slip_number":1493,"term_ident_id":"9999901200068"}
+6a402b13-6f0c-4c67-a183-e9129de7cf9a {"after_balance":13438,"before_balance":13437,"card_no":"****170036476647","card_trans_number":998,"customer_card_no":"************6647","slip_number":1494,"term_ident_id":"9999901200068"}
+
+
+# ここでuniqueID追加
+
+# waon 試験2
+84df640d-8da2-4791-803e-62376ce198a8 {"after_balance":13437,"before_balance":13438,"card_no":"****170036476647","card_trans_number":999,"customer_card_no":"************6647","slip_number":1495,"term_ident_id":"9999901200068","unique_id":"H120000000000068"}
+3d43a2a5-5343-4ef9-adcc-3ea88ce9cb5f {"after_balance":13438,"before_balance":13437,"card_no":"****170036476647","card_trans_number":1000,"customer_card_no":"************6647","slip_number":1496,"term_ident_id":"9999901200068","unique_id":"H120000000000068"}
+
+# iD 試験
+d887ccf1-d830-4cd1-aeb1-7d6e31880404
+ {"card_exp_date":"XX/XX",
+
+"card_no":"6900112000000***",
+"customer_card_no":"************0099",
+
+"slip_number":1300,"term_ident_id":"9999901200068","unique_id":"H120000000000068"}
+b56407b0-43f6-4929-900a-da2a596fd80b {"card_exp_date":"XX/XX","card_no":"6900112000000***","customer_card_no":"************0099","slip_number":1301,"term_ident_id":"9999901200068","unique_id":"H120000000000068"}
+
+# quicpay 試験
+カードが難しいのでいったん保留
+
+# nanaco
+
+# edy
+
+
+# QR
+
+c843981f-75b7-454f-b8c5-5a75ec3edee4 
+
+
+
+
+
+  ---
+  オプション4: アクセス制御の強化
+
+  特定の権限を持つクライアントのみ customer_card_no にアクセス可能にする。
+
+  デメリット:
+  - 実装が複雑
+  - API 設計が複雑化
+
+  ---
+  推奨アクション
+
+  オプション1（APIレスポンスから除外） が最も適切だと考えます。理由：
+
+  1. /v1/transactions API はクライアントがトランザクション情報を取得するためのもの
+  2. レシート印刷は自前の PrintManager が history_slips から直接取得して処理
+  3. API で customer_card_no を公開する必然性がない
+  4. セキュリティリスクを最小化できる
+
+  この方法で対応しますか？それとも他の方法をご希望でしょうか？
+
+
+
+=========================================================
+◆ 案１： 多めにマスクしてフル桁がわからないようにする。
+
+   △ → ガイドラインに書いていると覆すのが難しい
+
+◆ 案２：カード情報だけ別のAPIで取得する。（アプリレベルの暗号化）
+
+     → 
+
+
+
+
+・問題点
+  通信の傍受 : http 平文
+  正規端末か : APIを叩ければデータがとれる
+
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+
+◆ 案３：特に書いてないのでそのまま。（会員番号が電子マネーではそこまで重要ではない？
+  〇 → 
+
+◆障害レシート： iD と QuicPay 以外にある
+  - status でわかる必要がある。
+  -> status は両方 "unknown" で。別の項目で識別するほうがいいのでは
+
+◆ EXCELのない？を追加に変える。
+
+◆ yaml を整備。改訂履歴
+
+
